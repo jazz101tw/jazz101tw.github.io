@@ -194,5 +194,26 @@
   "artist": "Martin Falbisoner",
   "license": "CC BY-SA 3.0",
   "page": "https://commons.wikimedia.org/wiki/File:US_Capitol_east_side.JPG"
+ },
+ "getz": {
+  "file": "getz.jpg",
+  "title": "Stan_Getz,_tenor_saxophonist_at_Kastrup_Airport_CPH,_Copenhagen_(cropped).jpg",
+  "artist": "SAS Scandinavian Airlines",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Stan_Getz,_tenor_saxophonist_at_Kastrup_Airport_CPH,_Copenhagen_(cropped).jpg"
+ },
+ "gilberto": {
+  "file": "gilberto.jpg",
+  "title": "João_Gilberto.jpg",
+  "artist": "Tuca Vieira from São Paulo, Brazil",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Jo%C3%A3o_Gilberto.jpg"
+ },
+ "berkleepc": {
+  "file": "berkleepc.jpg",
+  "title": "Berklee_Performance_Center_(54924730130).jpg",
+  "artist": "ajay_suresh",
+  "license": "CC BY 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Berklee_Performance_Center_(54924730130).jpg"
  }
 }
