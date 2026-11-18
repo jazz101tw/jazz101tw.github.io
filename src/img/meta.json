@@ -173,5 +173,26 @@
   "artist": "Lee Paxton",
   "license": "CC BY-SA 4.0",
   "page": "https://commons.wikimedia.org/wiki/File:McCoyTynerandRaviColtrane.jpg"
+ },
+ "hotfive": {
+  "file": "hotfive_hotfive.jpg",
+  "title": "Maud_Cuney_Hare-154-Louis_Armstrong.jpg",
+  "artist": "Maud Cuney-Hare, 1874-1936",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Maud_Cuney_Hare-154-Louis_Armstrong.jpg"
+ },
+ "brubeck": {
+  "file": "brubeck_brubeck.jpg",
+  "title": "Dave_Brubeck_(1964).jpg",
+  "artist": "Jack de Nijs for Anefo  / Anefo",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Dave_Brubeck_(1964).jpg"
+ },
+ "capitol": {
+  "file": "capitol_capitol.jpg",
+  "title": "US_Capitol_east_side.JPG",
+  "artist": "Martin Falbisoner",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:US_Capitol_east_side.JPG"
  }
 }
