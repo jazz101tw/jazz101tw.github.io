@@ -215,5 +215,19 @@
   "artist": "ajay_suresh",
   "license": "CC BY 4.0",
   "page": "https://commons.wikimedia.org/wiki/File:Berklee_Performance_Center_(54924730130).jpg"
+ },
+ "esperanza": {
+  "file": "esperanza.jpg",
+  "title": "Esperanza_Spalding_2026.jpg",
+  "artist": "Løken",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Esperanza_Spalding_2026.jpg"
+ },
+ "kamasi": {
+  "file": "kamasi.jpg",
+  "title": "POS17_@Kristsll-397_(36005903335)_(cropped).jpg",
+  "artist": "Krists Luhaers",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:POS17_@Kristsll-397_(36005903335)_(cropped).jpg"
  }
 }
