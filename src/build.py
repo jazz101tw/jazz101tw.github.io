@@ -533,8 +533,8 @@ W('', 'words.html', HEAD.format(title='小辭典｜爵士101', desc='聽爵士�
 TLPH = {'1890s': ['bolden'], '1917': ['odjb'], '1925': ['hotfive', 'louis-armstrong'], '1927': ['cottonclub', 'duke-ellington'],
         '1935': ['goodman'], '1938': ['carnegie', 'goodman'], '1939': ['hawkins'], '1940s': ['mintons', 'gillespie', 'charlie-parker'],
         '1949': ['mulligan', 'miles-davis'], '1953': ['vangelder'], '1954': ['newport'], '1956': ['rollins'], '1959': ['brubeck', 'coltrane'],
-        '1961': ['village'], '1962': ['getz'], '1965': ['coltrane'], '1970': ['miles-davis'], '1970s': ['berklee', 'fakebook'],
-        '1975': ['koln'], '1987': ['capitol'], '2004': ['fakebook', 'berklee']}
+        '1961': ['village'], '1962': ['getz', 'gilberto'], '1965': ['coltrane'], '1970': ['miles-davis'], '1970s': ['berklee', 'berkleepc', 'leadsheet', 'sheetmusic'],
+        '1975': ['koln'], '1987': ['capitol'], '2004': ['leadsheet', 'sheetmusic', 'fakebook', 'berkleepc']}
 def tlph(y):
     for k in TLPH.get(y, []):
         if META.get(k): return META[k]
