@@ -124,5 +124,54 @@
   "artist": "Library of Congress Life",
   "license": "CC0",
   "page": "https://commons.wikimedia.org/wiki/File:Herbie_Hancock_2023.jpg"
+ },
+ "bolden": {
+  "file": "bolden.jpg",
+  "title": "Buddy_Bolden_001.png",
+  "artist": "AnonymousUnknown author",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Buddy_Bolden_001.png"
+ },
+ "odjb": {
+  "file": "odjb.jpg",
+  "title": "ODJBcard.JPG",
+  "artist": "Unknown authorUnknown author",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:ODJBcard.JPG"
+ },
+ "goodman": {
+  "file": "goodman.jpg",
+  "title": "Benny_Goodman_1942.jpg",
+  "artist": "Photo by Jammes J. Kriegsmann, New York",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Benny_Goodman_1942.jpg"
+ },
+ "carnegie": {
+  "file": "carnegie.jpg",
+  "title": "Carnegie_Hall_-_Full_(48155558466).jpg",
+  "artist": "Ajay Suresh from New York, NY, USA",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Carnegie_Hall_-_Full_(48155558466).jpg"
+ },
+ "hawkins": {
+  "file": "hawkins.jpg",
+  "title": "Coleman_Hawkins.jpg",
+  "artist": "Unknown authorUnknown author",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Coleman_Hawkins.jpg"
+ },
+ "mintons": {
+  "file": "mintons.jpg",
+  "title": "Mintons-playhouse-206w118.jpg",
+  "artist": "Americasroof",
+  "license": "CC BY-SA 3.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Mintons-playhouse-206w118.jpg"
+ },
+ "newport": {
+  "file": "newport.jpg",
+  "title": "McCoyTynerandRaviColtrane.jpg",
+  "artist": "Lee Paxton",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:McCoyTynerandRaviColtrane.jpg"
  }
 }
