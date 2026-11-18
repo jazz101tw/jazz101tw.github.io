@@ -7,7 +7,7 @@ ROOT = os.path.abspath(os.path.join(HERE, '..', '..'))
 OUT = os.environ.get('JAZZ_OUT') or os.path.join(ROOT, 'jazz')
 sys.path.insert(0, HERE)
 from stories import S
-from extras import PEOPLE, WORDS, TIMELINE, START, BRANCH, SHOP
+from extras import PEOPLE, WORDS, TIMELINE, START, BRANCH, SHOP, ERAS, HALLS, TL_MORE
 
 IMGSRC = os.path.join(HERE, 'img')
 META = json.load(open(os.path.join(IMGSRC, 'meta.json'), encoding='utf-8')) if os.path.exists(os.path.join(IMGSRC, 'meta.json')) else {}
@@ -368,6 +368,59 @@ CSS2 = r"""
 .evpic img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;filter:sepia(.18) contrast(1.02)}
 .evpic figcaption{position:absolute;left:0;right:0;bottom:0;font-size:10px;line-height:1.4;color:rgba(255,255,255,.78);padding:14px 9px 5px;background:linear-gradient(transparent,rgba(0,0,0,.55))}
 @media (max-width:640px){.ev.wp{grid-template-columns:1fr;gap:12px}.ev.wp .evpic{order:-1;margin-top:0}}
+.hallnav{position:sticky;top:52px;z-index:5;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);padding:10px max(22px,calc(50% - 440px)) 12px;border-bottom:1px solid var(--hair);margin-top:30px}
+.hallnav::-webkit-scrollbar{display:none}
+.hallnav a{flex:0 0 auto;text-decoration:none;padding:7px 14px;border-radius:999px;font-size:14px;color:var(--graphite);border:1px solid transparent;white-space:nowrap}
+.hallnav a b{font-weight:600;margin-right:6px}
+.hallnav a.on{background:var(--ink);color:var(--paper)}
+.hallnav i{position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--brass);transform:scaleX(0);transform-origin:left;transition:transform .1s linear}
+@media (max-width:640px){.hallnav{top:78px}.hallnav a span{display:none}}
+.exhibition{max-width:900px}
+.hall{padding-top:70px;scroll-margin-top:130px}
+.hallhead{padding:36px 34px;border-radius:24px;background:linear-gradient(135deg,var(--lamp),var(--wash));margin-bottom:40px}
+.hallhead .no{font-size:14px;color:var(--brass);font-weight:600}
+.hallhead h2{font-size:clamp(30px,5vw,46px);font-weight:700;letter-spacing:-.02em;margin-top:6px;line-height:1.2}
+.hallhead p{font-size:17px;line-height:1.85;margin-top:12px;max-width:38em;color:var(--ink)}
+.hall .tl{margin-top:0}
+.ev{position:relative;border-radius:18px;transition:background .2s}
+.ev:hover{background:var(--wash)}
+.evbtn{position:absolute;inset:-8px -14px;z-index:2;background:transparent;border:0;cursor:pointer;border-radius:18px}
+.evbtn:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+.ev .open{display:inline-block;margin-top:10px;font-size:14px;color:var(--brass)}
+.ev .open:after{content:" ＋"}
+.ev.pre{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease,background .2s}
+.ev.pre.in{opacity:1;transform:none}
+.evpic.none{display:grid;place-items:center;background:linear-gradient(135deg,#2a2018,#4a3622)}
+.evpic.none span{font-size:44px;font-weight:200;color:#e9d9bd;letter-spacing:-.03em}
+#exhibit{border:0;padding:0;margin:auto;inset:0;width:min(920px,calc(100% - 24px));max-height:calc(100dvh - 40px);border-radius:24px;background:var(--paper);color:var(--ink);box-shadow:0 40px 120px -30px rgba(0,0,0,.6);overflow:hidden;display:none;flex-direction:column}
+#exhibit[open]{display:flex;animation:pop .28s ease}
+#exhibit::backdrop{background:rgba(12,10,8,.62);backdrop-filter:blur(4px)}
+@keyframes pop{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#exhibit[open]{animation:none}}
+.xbar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px 12px 22px;border-bottom:1px solid var(--hair);font-size:13px;color:var(--graphite)}
+.xclose{background:var(--wash);border:0;width:34px;height:34px;border-radius:50%;font-size:15px;cursor:pointer;color:var(--ink)}
+.xbody{overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;min-height:0}
+.xi{background:#111;position:relative;min-height:320px}
+.xi img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;filter:sepia(.12)}
+.xi small{position:absolute;left:0;right:0;bottom:0;font-size:11px;color:rgba(255,255,255,.8);padding:24px 14px 10px;background:linear-gradient(transparent,rgba(0,0,0,.6))}
+.xi .ph{position:absolute;inset:0;display:grid;place-items:center;font-size:64px;font-weight:200;color:#e9d9bd;background:linear-gradient(135deg,#2a2018,#4a3622)}
+.xtx{padding:30px 30px 26px}
+.xy{font-size:44px;font-weight:200;letter-spacing:-.03em;color:var(--brass);line-height:1}
+.xt{font-size:26px;font-weight:700;margin-top:8px;line-height:1.3}
+.xd{font-size:16px;line-height:1.8;margin-top:12px;font-weight:500}
+.xm{font-size:16px;line-height:1.9;margin-top:12px;color:var(--graphite)}
+.xs{margin-top:20px;background:var(--wash);border-radius:16px;padding:16px 18px}
+.xs b{display:block;font-size:16px}
+.xs span{display:block;font-size:14px;color:var(--graphite);margin-top:4px}
+.xs .lk a{color:var(--brass);text-decoration:none;margin-right:16px;font-size:14px}
+.xp h4{font-size:14px;color:var(--graphite);font-weight:500;margin:20px 0 10px}
+.xp a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-size:14px;border:1px solid var(--hair);border-radius:999px;padding:4px 14px 4px 4px;margin:0 8px 8px 0}
+.xp a img{width:28px;height:28px;border-radius:50%;object-fit:cover}
+.xp a.story{display:block;border:0;padding:0;margin-top:14px;color:var(--brass);font-size:15px}
+.xnav{display:flex;justify-content:space-between;padding:12px 16px;border-top:1px solid var(--hair)}
+.xnav button{background:none;border:1px solid var(--hair);color:var(--ink);font:inherit;font-size:14px;padding:9px 18px;border-radius:999px;cursor:pointer}
+.xnav button:hover{border-color:var(--brass);color:var(--brass)}
+@media (max-width:720px){.xbody{grid-template-columns:1fr;display:block}.xi{min-height:0;height:auto}.xi img{position:static;display:block;height:auto;max-height:46vh;object-fit:cover}.xi small{position:static;background:#111;padding:6px 12px}.xi .ph{position:static;height:180px}.xtx{padding:22px 20px}.xy{font-size:36px}.xt{font-size:22px}}
 .tlmini img{display:block;width:134px;height:90px;object-fit:cover;border-radius:10px;margin-bottom:10px;filter:sepia(.18)}
 .tlmini{display:flex;gap:0;margin-top:34px;overflow-x:auto;border-top:2px solid var(--hair);scrollbar-width:thin}
 .tlmini a{flex:0 0 150px;padding:16px 16px 10px 0;text-decoration:none;position:relative}
@@ -394,7 +447,7 @@ HEAD = """<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><me
 <link rel="stylesheet" href="{p}style.css"></head><body>"""
 
 NAV = [('index.html#stories', '故事', 'stories'), ('start.html', '入門路線', 'start'), ('listen.html', '聽懂爵士', 'listen'), ('people.html', '樂手', 'people'),
-       ('words.html', '小辭典', 'words'), ('timeline.html', '時間軸', 'timeline'), ('shop.html', '選品', 'shop'), ('index.html#letter', '電子報', 'letter')]
+       ('words.html', '小辭典', 'words'), ('timeline.html', '線上展', 'timeline'), ('shop.html', '選品', 'shop'), ('index.html#letter', '電子報', 'letter')]
 def nav(p, cur=''):
     links = ''.join(f'<a href="{p}{h}"{" class=cur aria-current=page" if k == cur else ""}>{t}</a>' for h, t, k in NAV)
     return f'<div class="nav"><div class="in"><a class="brand" href="{p}index.html">爵士101</a><nav aria-label="網站導覽">{links}</nav></div></div>'
@@ -539,14 +592,57 @@ def tlph(y):
     for k in TLPH.get(y, []):
         if META.get(k): return META[k]
     return None
-tl = ''
-for (y, t, d, st) in TIMELINE:
-    a = f'<a href="story/{st}.html">讀這個故事：{e(BYSLUG[st]["title"])}</a>' if st else ''
+TLPH.update({'2008': ['herbie-hancock'], '2011': ['esperanza'], '2015': ['kamasi']})
+EXH = []
+for n, (y, ti, d, st) in enumerate(TIMELINE):
+    era, more, (song, sn), ppl = TL_MORE[y]
     ph = tlph(y)
-    fig = f'<figure class="evpic"><img src="img/{ph["file"]}" alt="{e(t)}" loading="lazy"><figcaption>{credit(ph)}</figcaption></figure>' if ph else ''
-    tl += f'<div class="ev{" has" if st else ""}{" wp" if ph else ""}"><div class="evt"><div class="yr">{e(y)}</div><h3>{e(t)}</h3><p>{e(d)}</p>{a}</div>{fig}</div>'
-W('', 'timeline.html', HEAD.format(title='時間軸｜爵士101', desc='從紐奧良街頭到今天，爵士一百多年的重要時刻。', p='', ogimg='') + nav('', 'timeline') +
-  phead('一百多年的爵士，走一遍。', '從紐奧良的街頭到今天。金色的點，代表這個站上有完整的故事。') + f'<div class="wrap" style="max-width:900px"><div class="tl">{tl}</div></div>' + letter() + foot())
+    EXH.append({'id': 'y' + y, 'y': y, 't': ti, 'd': d, 'm': more, 'era': era, 'song': song, 'sn': sn,
+                'img': ('img/' + ph['file']) if ph else '', 'cr': credit(ph) if ph else '',
+                'st': ({'href': f'story/{st}.html', 't': BYSLUG[st]['title']} if st else None),
+                'pp': [{'id': x, 'n': PBY[x][1], 'img': ('img/' + META[PPH.get(x, x)]['file']) if META.get(PPH.get(x, x)) else ''} for x in ppl if x in PBY]})
+halls = ''
+hnav = ''
+for hi, (eid, ename) in enumerate(ERAS):
+    hn, yrs, intro = HALLS[eid]
+    no, nm = hn.split('　')
+    hnav += f'<a href="#hall-{eid}" data-h="{eid}"><b>{e(no)}</b><span>{e(nm)}</span></a>'
+    evs = ''
+    for x in [x for x in EXH if x['era'] == eid]:
+        fig = f'<figure class="evpic"><img src="{x["img"]}" alt="" loading="lazy"><figcaption>{e(x["cr"])}</figcaption></figure>' if x['img'] else f'<figure class="evpic none"><span>{e(x["y"])}</span></figure>'
+        evs += (f'<article class="ev{" has" if x["st"] else ""} wp" id="{x["id"]}"><button class="evbtn" data-id="{x["id"]}" aria-label="打開展品：{e(x["t"])}"></button>'
+                f'<div class="evt"><div class="yr">{e(x["y"])}</div><h3>{e(x["t"])}</h3><p>{e(x["d"])}</p><span class="open">看展品說明＋先聽一首</span></div>{fig}</article>')
+    halls += (f'<section class="hall" id="hall-{eid}" data-h="{eid}"><header class="hallhead"><span class="no">{e(no)}・{e(yrs)}</span><h2>{e(nm)}</h2><p>{e(intro)}</p></header>'
+              f'<div class="tl">{evs}</div></section>')
+exjs = json.dumps(EXH, ensure_ascii=False)
+EXHJS = r"""<script>(function(){var X=__X__,dlg=document.getElementById('exhibit'),cur=-1;
+function q(s){return encodeURIComponent(s)}
+function show(i){cur=(i+X.length)%X.length;var x=X[cur];
+ dlg.querySelector('.xi').innerHTML=x.img?'<img src="'+x.img+'" alt=""><small>'+x.cr+'</small>':'<div class="ph">'+x.y+'</div>';
+ dlg.querySelector('.xy').textContent=x.y;dlg.querySelector('.xt').textContent=x.t;dlg.querySelector('.xd').textContent=x.d;dlg.querySelector('.xm').textContent=x.m;
+ dlg.querySelector('.xs').innerHTML='<b>先聽一首：〈'+x.song+'〉</b><span>'+x.sn+'</span><span class="lk"><a target="_blank" rel="noopener" href="https://music.apple.com/search?term='+q(x.song)+'">Apple Music</a><a target="_blank" rel="noopener" href="https://open.spotify.com/search/'+q(x.song)+'">Spotify</a></span>';
+ dlg.querySelector('.xp').innerHTML=(x.pp.length?'<h4>這件展品裡的人</h4>'+x.pp.map(function(p){return '<a href="people.html#'+p.id+'">'+(p.img?'<img src="'+p.img+'" alt="">':'')+p.n+'</a>'}).join(''):'')+(x.st?'<a class="story" href="'+x.st.href+'">讀完整故事：'+x.st.t+'</a>':'');
+ dlg.querySelector('.xc').textContent='展品 '+(cur+1)+' / '+X.length;
+ if(!dlg.open)dlg.showModal();dlg.querySelector('.xbody').scrollTop=0;history.replaceState(null,'','#'+x.id)}
+document.querySelectorAll('.evbtn').forEach(function(b){b.addEventListener('click',function(){show(X.findIndex(function(x){return x.id===b.dataset.id}))})});
+dlg.querySelector('.xprev').onclick=function(){show(cur-1)};dlg.querySelector('.xnext').onclick=function(){show(cur+1)};
+dlg.querySelector('.xclose').onclick=function(){dlg.close()};
+dlg.addEventListener('click',function(ev){if(ev.target===dlg)dlg.close()});
+dlg.addEventListener('close',function(){history.replaceState(null,'',location.pathname);var el=document.getElementById(X[cur].id);if(el)el.scrollIntoView({block:'center'})});
+document.addEventListener('keydown',function(ev){if(!dlg.open)return;if(ev.key==='ArrowRight')show(cur+1);if(ev.key==='ArrowLeft')show(cur-1)});
+var h=location.hash.slice(1),hi=X.findIndex(function(x){return x.id===h});if(hi>-1)setTimeout(function(){show(hi)},200);
+var nav=document.querySelectorAll('.hallnav a'),bar=document.querySelector('.hallnav i');
+var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){nav.forEach(function(a){a.classList.toggle('on',a.dataset.h===en.target.dataset.h);if(a.dataset.h===en.target.dataset.h&&a.scrollIntoView)a.parentNode.scrollTo({left:a.offsetLeft-20,behavior:'smooth'})})}})},{rootMargin:'-45% 0px -50% 0px'});
+document.querySelectorAll('.hall').forEach(function(s){io.observe(s)});
+addEventListener('scroll',function(){var m=document.getElementById('exhibition'),r=m.getBoundingClientRect(),p=Math.min(1,Math.max(0,(innerHeight*.5-r.top)/r.height));bar.style.transform='scaleX('+p+')'},{passive:true});
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){var ro=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');ro.unobserve(en.target)}})},{rootMargin:'0px 0px -12% 0px'});document.querySelectorAll('.ev').forEach(function(el){el.classList.add('pre');ro.observe(el)})}
+})()</script>""".replace('__X__', exjs)
+DLG = ('<dialog id="exhibit" aria-label="展品說明"><div class="xbar"><span class="xc"></span><button class="xclose" aria-label="關閉">✕</button></div><div class="xbody"><div class="xi"></div>'
+       '<div class="xtx"><div class="xy"></div><h2 class="xt"></h2><p class="xd"></p><p class="xm"></p><div class="xs"></div><div class="xp"></div></div></div>'
+       '<div class="xnav"><button class="xprev">← 上一件</button><button class="xnext">下一件 →</button></div></dialog>')
+W('', 'timeline.html', HEAD.format(title='爵士一百年線上展｜爵士101', desc='像逛一個展：從紐奧良的街頭到今天，六個展廳、二十多件展品，每件都能點開看說明、先聽一首。', p='', ogimg='') + nav('', 'timeline') +
+  phead('爵士一百年，一個線上展。', '從紐奧良的街頭，走到今天。六個展廳，按順序逛；每一件展品都可以點開，看說明、先聽一首。') +
+  f'<nav class="hallnav" aria-label="展廳">{hnav}<i aria-hidden="true"></i></nav><div class="wrap exhibition" id="exhibition">{halls}</div>{DLG}' + letter() + foot('', EXHJS))
 
 # ---------- 選品 ----------
 sh = ''
@@ -569,7 +665,7 @@ doors = ('<div class="doors">'
          '<a href="listen.html"><b>用耳朵學</b><span>十個可以按的聲音示範，搖擺、藍調、二五一。</span><i>聽懂爵士</i></a>'
          f'<a href="words.html"><b>查名詞</b><span>{len(WORDS)} 個名詞，用白話講清楚。</span><i>小辭典</i></a></div>')
 pmini = ''.join(f'<a href="start.html"><div class="disc2" style="--c:{COL[n % len(COL)]}" aria-hidden="true"></div><b>{n+1}．《{e(a)}》</b><span>{e(b)}・{e(y)}</span></a>' for n, (a, b, y, *_r) in enumerate(START[:6]))
-tlm = ''.join(f'<a href="timeline.html" class="{"has" if st else ""}">{(f"<img src='img/{tlph(y)['file']}' alt='' loading='lazy'>" if tlph(y) else "")}<b>{e(y)}</b><span>{e(t)}</span></a>' for (y, t, d, st) in TIMELINE)
+tlm = ''.join(f'<a href="timeline.html#y{y}" class="{"has" if st else ""}">{(f"<img src='img/{tlph(y)['file']}' alt='' loading='lazy'>" if tlph(y) else "")}<b>{e(y)}</b><span>{e(t)}</span></a>' for (y, t, d, st) in TIMELINE)
 peo = ''.join(f'<a href="people.html#{p[0]}">{portrait(p[0], p[1], p[4], n)}<b>{e(p[1])}</b><span>{e(p[4])}・{e(p[3])}</span></a>' for n, p in enumerate(PEOPLE[:8]))
 wjs = json.dumps([[w[0], w[1], w[2], w[3]] for w in WORDS], ensure_ascii=False)
 shopmini = ''.join(f'<div class="item"><b>{e(n)}</b><p>{e(d)}</p></div>' for n, d, k in [SHOP[0][2][3], SHOP[1][2][0], SHOP[2][2][0]])
@@ -585,7 +681,7 @@ index = HEAD.format(title='爵士101｜一分鐘講不完的爵士故事', desc=
     f'<section class="sec"><h2>第一次聽，照這個順序。</h2><p class="lede">十張唱片，一張比一張多一點東西。每張先聽一首就好。</p><div class="pathmini">{pmini}</div><a class="more-link" href="start.html">看完整的入門路線</a></section></div>' + \
     f'<section class="band"><div class="in" style="display:block"><small>聽懂爵士</small><h2>先按下去，再讀解釋。</h2><p>同一段旋律，直的和搖擺的差在哪裡？十二小節藍調長什麼樣子？用瀏覽器現場彈給你聽。</p>' + \
     f'<div class="demos">{demo_card("swing")}{demo_card("blues")}</div><a class="btn" href="listen.html">聽全部十個示範</a></div></section>' + \
-    f'<div class="wrap"><section class="sec"><h2>一百多年，走一遍。</h2><p class="lede">從紐奧良的街頭到今天。金色的點，這裡有完整的故事。</p><div class="tlmini">{tlm}</div><a class="more-link" href="timeline.html">看完整時間軸</a></section>' + \
+    f'<div class="wrap"><section class="sec"><h2>逛一個爵士一百年的展。</h2><p class="lede">六個展廳、二十多件展品，從紐奧良的街頭走到今天。點任何一件，就能看說明、先聽一首。</p><div class="tlmini">{tlm}</div><a class="more-link" href="timeline.html">走進線上展</a></section>' + \
     f'<section class="sec"><h2>先認識這些人。</h2><p class="lede">每個人一句話、一首歌。</p><div class="pmini">{peo}</div><a class="more-link" href="people.html">看全部 {len(PEOPLE)} 位樂手</a></section>' + \
     '<section class="sec"><h2>今天學一個詞。</h2><div class="today" id="today"><div><h3 id="tw"></h3><p id="tx"></p></div><div><button id="tn">換一個</button></div></div><a class="more-link" href="words.html">打開小辭典</a></section>' + \
     f'<section class="sec"><h2>開始聽，需要的東西不多。</h2><p class="lede">幾張唱片、一本書、一副能聽見貝斯的耳機。</p><div class="items">{shopmini}</div><a class="more-link" href="shop.html">看全部選品</a></section>' + \

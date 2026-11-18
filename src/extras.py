@@ -156,3 +156,50 @@ SHOP = [
  ("唱片刷與內套", "黑膠最怕灰塵，一支碳纖維刷、一包防靜電內套就夠了。", "黑膠 碳纖維刷 防靜電內套"),
 ]),
 ]
+
+# 時間軸展開內容：年份 → (年代分組, 展開說明, (先聽曲, 說明), [相關樂手 slug])
+ERAS = [('origin', '起源'), ('swing', '搖擺時代'), ('bebop', 'Bebop 與酷派'), ('golden', '黃金年代'), ('after', '融合之後')]
+TL_MORE = {
+"1890s": ("origin", "十九世紀末的紐奧良是一座港口城市，非洲、加勒比海、法國和西班牙的文化混在一起。黑人在剛果廣場的鼓聲與舞蹈、教會的福音、街頭的銅管樂隊、鋼琴上的拉格泰姆，慢慢揉成一種新的音樂。Buddy Bolden 的樂團以音量大、帶著藍調味道出名，但他 1907 年就因精神疾病住進療養院，一個音都沒有被錄下來。這張照片，幾乎是他留下的唯一影像。", ("Buddy Bolden's Blues", "Jelly Roll Morton 1939 年的錄音，憑記憶唱出 Bolden 當年的歌"), ["louis-armstrong"]),
+"1917": ("origin", "1917 年 2 月，一支從紐奧良來的白人樂團在紐約的 Victor 錄音室錄下兩首曲子，唱片一推出就大賣，「jazz」這個字從此在全美流行起來。樂團名字原本拼成 Jass，後來才改成 Jazz。諷刺的是，第一張爵士唱片不是由創造這種音樂的黑人樂手錄的；很多黑人樂手要再等幾年，才有機會走進錄音室。", ("Livery Stable Blues", "第一張爵士唱片，可以聽到樂器模仿馬叫和雞叫"), []),
+"1925": ("origin", "1925 年到 1928 年，Louis Armstrong 在芝加哥用自己的樂團錄了一系列唱片。在這之前，爵士多半是大家一起即興合奏；Armstrong 站出來，一個人吹一大段，吹得又亮又有自信，從此「獨奏」成了爵士的中心。他在〈Heebie Jeebies〉裡用沒有意義的音節即興唱，讓 scat 唱法流行起來。", ("West End Blues", "1928 年。開頭那段小號獨奏，常被說是爵士史上最有名的十幾秒"), ["louis-armstrong"]),
+"1927": ("origin", "Cotton Club 在哈林區，但只讓白人客人進場，台上表演的卻全是黑人樂手和舞者。Duke Ellington 的樂團在這裡駐場了好幾年，為舞台秀寫了大量帶著異國情調的曲子。俱樂部的演出透過電台轉播到全美，讓 Ellington 成了家喻戶曉的名字，也讓他有穩定的收入養一整個樂團，慢慢寫出更有野心的作品。", ("Mood Indigo", "1930 年。三把管樂器的特殊配置，聽起來像一種新的顏色"), ["duke-ellington"]),
+"1935": ("swing", "1935 年 8 月，Benny Goodman 的樂團在美國巡迴，一路反應冷淡，到了洛杉磯的 Palomar 舞廳，台下的年輕人卻瘋了。透過電台，西岸的聽眾早就聽過他的搖擺樂。從這一晚起，大樂團搖擺樂成了美國最流行的音樂。Goodman 也是最早在台上讓黑人和白人樂手同台的樂團領袖之一，例如鋼琴手 Teddy Wilson 和顫音琴手 Lionel Hampton。", ("Sing, Sing, Sing", "1937 年。鼓手 Gene Krupa 的鼓聲幾乎從頭打到尾"), []),
+"1938": ("swing", "1938 年 1 月 16 日，Benny Goodman 帶著樂團走進紐約的卡內基音樂廳。這裡原本是古典音樂的殿堂，爵士樂手能站上這個舞台，在當時是一件大事。那天的演出被錄了下來，但錄音盤一度被遺忘，直到 1950 年才發行成唱片，成了最暢銷的現場爵士專輯之一。", ("Sing, Sing, Sing（1938 卡內基現場）", "十幾分鐘的版本，台下的興奮聽得出來"), []),
+"1939": ("swing", "這一年有兩件事。1 月，Alfred Lion 在紐約錄下 Blue Note 的第一場錄音，兩位布基伍基鋼琴手。10 月，次中音薩克斯風手 Coleman Hawkins 錄了〈Body and Soul〉，整首幾乎不吹原本的旋律，直接在和弦上即興，結果意外成了暢銷曲。很多人說，這首曲子證明了大眾也聽得懂純粹的即興。", ("Body and Soul", "Coleman Hawkins，1939。注意他多快就離開了原本的旋律"), ["sonny-rollins", "john-coltrane"]),
+"1940s": ("bebop", "1940 年代初，哈林區的 Minton's Playhouse 每到深夜就有即興聚會。駐店鋼琴手是 Thelonious Monk，鼓手是 Kenny Clarke，Charlie Parker 和 Dizzy Gillespie 常常來。他們故意把曲子彈得更快、和弦換得更複雜，讓只會跟著舞曲節奏走的人跟不上。這種新音樂後來被叫作 bebop。不巧的是，1942 到 1944 年美國樂手工會罷錄，bebop 誕生的那幾年幾乎沒有留下錄音。", ("Ko-Ko", "Charlie Parker，1945。速度快到令人喘不過氣"), ["charlie-parker", "thelonious-monk"]),
+"1949": ("bebop", "bebop 又快又熱，有一群樂手想走另一條路。1949 到 1950 年，Miles Davis 帶著一個九人樂團錄音，編制裡有法國號和低音號，聲音柔和、層次細，編曲由 Gil Evans、Gerry Mulligan、John Lewis 等人負責。這些錄音後來在 1957 年集結成《Birth of the Cool》，被當成酷派爵士的起點。", ("Boplicity", "《Birth of the Cool》。聽法國號和低音號怎麼讓整個樂團變柔"), ["miles-davis"]),
+"1953": ("bebop", "Blue Note 唱片開始把錄音交給 Rudy Van Gelder。他白天當驗光師，晚上在紐澤西父母家的客廳錄音。接下來十幾年，大量的 hard bop 經典都在這間客廳和他後來蓋的錄音室裡錄成，他的名字縮寫 RVG 也刻在無數張黑膠上。", ("Moanin'", "Art Blakey，1958 年 Hackensack 錄音"), ["art-blakey", "thelonious-monk"]),
+"1954": ("bebop", "1954 年 7 月，在羅德島新港的富人避暑地，第一屆新港爵士音樂節開幕，由鋼琴手兼製作人 George Wein 籌辦。爵士第一次有了自己的大型戶外音樂節。1956 年，Duke Ellington 樂團在這裡演出〈Diminuendo and Crescendo in Blue〉，薩克斯風手 Paul Gonsalves 一口氣吹了二十七輪獨奏，全場起立，讓已經過氣的 Ellington 重新翻紅。", ("Diminuendo and Crescendo in Blue（1956 新港現場）", "中段那段長長的薩克斯風獨奏，聽台下怎麼越來越瘋"), ["duke-ellington"]),
+"1956": ("golden", "1956 年 6 月，Sonny Rollins 在 Van Gelder 的客廳錄下《Saxophone Colossus》，五首曲子，一天錄完。這張唱片讓他被叫作「薩克斯風巨人」。1950 年代中期是 hard bop 的高峰，Blue Note 和 Prestige 幾乎每個月都在發經典。", ("St. Thomas", "《Saxophone Colossus》第一首，加勒比海節奏"), ["sonny-rollins"]),
+"1959": ("golden", "1959 年常被說是爵士史上最豐收的一年。Miles Davis 的《Kind of Blue》、John Coltrane 的《Giant Steps》、Dave Brubeck 的《Time Out》、Charles Mingus 的《Mingus Ah Um》、Ornette Coleman 的《The Shape of Jazz to Come》，都在這一年錄音或發行。五張唱片，五個完全不同的方向：調式、快速換和弦、奇數拍子、情緒與福音、自由爵士。", ("Take Five", "Dave Brubeck Quartet，《Time Out》。五拍一小節，卻好聽到成了暢銷單曲"), ["miles-davis", "john-coltrane", "charles-mingus"]),
+"1961": ("golden", "Bill Evans 三重奏在 Village Vanguard 從下午彈到晚上，錄下兩張經典現場專輯。十一天後，貝斯手 Scott LaFaro 車禍過世，那個星期天成了這個組合最後的聲音。", ("Gloria's Step", "《Sunday at the Village Vanguard》第一首，聽貝斯怎麼站到前面來"), ["bill-evans"]),
+"1962": ("golden", "1962 年 2 月，薩克斯風手 Stan Getz 和吉他手 Charlie Byrd 在華盛頓錄下《Jazz Samba》，把巴西的巴薩諾瓦帶進美國，單曲〈Desafinado〉大賣。1963 年，Getz 和巴西歌手 João Gilberto、作曲家 Antônio Carlos Jobim 合作《Getz/Gilberto》，Gilberto 的太太 Astrud 臨時唱了英文版〈The Girl from Ipanema〉，紅遍全世界。這張唱片後來拿下葛萊美年度專輯。", ("The Girl from Ipanema", "《Getz/Gilberto》。先是葡萄牙文，再換 Astrud 輕輕唱英文"), []),
+"1965": ("golden", "1964 年 12 月 9 日，John Coltrane 的經典四重奏（McCoy Tyner 鋼琴、Jimmy Garrison 貝斯、Elvin Jones 鼓）在 Van Gelder 的錄音室，只用一個晚上錄完四段組曲。Coltrane 在內頁寫了一首獻給神的詩。《A Love Supreme》隔年初發行，成了他最暢銷、也最多人覺得神聖的一張唱片。", ("Acknowledgement", "第一段。後半段四個人反覆唱出「A Love Supreme」"), ["john-coltrane"]),
+"1970": ("after", "1969 年 8 月，Miles Davis 找來一大群樂手，連續三天在錄音室裡即興：兩個鼓手、兩把貝斯、好幾台電鋼琴，還有吉他手 John McLaughlin。製作人 Teo Macero 再把一大堆錄音帶剪接拼貼成曲子。1970 年發行的《Bitches Brew》聽起來像搖滾、像放克，也像一場夢，很多傳統爵士迷聽不下去，卻賣得比 Miles 之前的唱片都好。", ("Miles Runs the Voodoo Down", "《Bitches Brew》。電吉他、電鋼琴和兩組鼓一起推"), ["miles-davis", "wayne-shorter", "herbie-hancock"]),
+"1970s": ("after", "波士頓一帶的音樂學生手抄了一本曲譜，收錄當時樂手真正在彈的幾百首曲子，沒有出版社、沒有作者，一路影印流傳到全世界。它就是《Real Book》。網站上有完整的故事。", ("Autumn Leaves", "幾乎每個爵士學生學的第一首曲子"), []),
+"1975": ("after", "1975 年 1 月 24 日深夜，Keith Jarrett 在科隆歌劇院，用一台音不準、高音刺耳的小鋼琴，完全即興彈了一整場。這場差點取消的演出，後來成了史上最暢銷的獨奏鋼琴專輯之一。網站上有完整的故事。", ("The Köln Concert, Part I", "先聽開頭那幾個像鈴聲的音"), ["keith-jarrett"]),
+"1987": ("after", "1987 年，美國國會通過一份決議，稱爵士是「一種珍貴而罕見的美國國家寶藏」，鼓勵政府和民間保存、研究、教育爵士樂。這是爵士從街頭、俱樂部、地下室一路走到國家殿堂的一個象徵。", ("Take the 'A' Train", "Duke Ellington 樂團的招牌曲"), ["duke-ellington"]),
+"2004": ("after", "音樂出版社 Hal Leonard 花了很多功夫，一首一首跟作曲家談授權，推出合法版的《Real Book》，保留原本的手寫風格和頁碼，讓作曲家終於拿得到版稅。地下流傳了三十年的書，在這一年走到了檯面上。", ("All the Things You Are", "《Real Book》裡最受樂手喜愛的標準曲之一"), []),
+}
+
+ERAS.append(('now', '今天'))
+# 展廳導覽：id → (展廳名稱, 年代, 導覽文字)
+HALLS = {
+ 'origin': ('第一廳　港口的聲音', '1890s–1920s', '爵士從哪裡來？從紐奧良的街頭、教會和舞廳開始。非洲的節奏、歐洲的和聲、藍調的憂傷，在一座港口城市裡相遇，再坐著火車和唱片，一路往北走到芝加哥和紐約。'),
+ 'swing': ('第二廳　全美國都在跳舞', '1930s', '經濟大蕭條的年代，大家需要一點快樂。十幾個人的大樂團、能跳舞的搖擺節奏、電台轉播，讓爵士變成全美國的流行音樂。'),
+ 'bebop': ('第三廳　深夜的實驗室', '1940s–1950s 初', '戰爭結束前後，一群年輕樂手在深夜的俱樂部裡，把爵士彈得更快、更複雜，不再是為了讓人跳舞，而是為了讓人坐下來聽。另一群人則往反方向走，讓爵士變得更柔、更酷。'),
+ 'golden': ('第四廳　黃金年代', '1950s–1960s', '錄音技術成熟、黑膠唱片普及，爵士迎來最多經典誕生的十幾年。hard bop、調式爵士、巴薩諾瓦、自由爵士，好幾條路同時往前走。'),
+ 'after': ('第五廳　插上電之後', '1970s–1990s', '搖滾和放克佔領了排行榜，爵士樂手拿起電吉他和合成器。同時，爵士走進學校和音樂廳，被寫成教科書，也被稱為國家寶藏。'),
+ 'now': ('第六廳　今天的爵士', '2000s–', '爵士沒有變成博物館裡的東西。新一代的樂手把嘻哈、靈魂樂、電子音樂帶進來，在串流平台上找到新的聽眾。'),
+}
+TIMELINE += [
+("2008", "爵士拿下年度專輯", "Herbie Hancock 向 Joni Mitchell 致敬的《River: The Joni Letters》拿下葛萊美年度專輯，是《Getz/Gilberto》之後四十多年來第一張得獎的爵士專輯。", None),
+("2011", "貝斯手打敗了小賈斯汀", "爵士貝斯手兼歌手 Esperanza Spalding 拿下葛萊美最佳新人，是這個獎項第一次頒給爵士樂手。", None),
+("2015", "三小時的史詩", "薩克斯風手 Kamasi Washington 發行長達近三小時的三張唱片《The Epic》，在年輕聽眾之間爆紅，讓很多人第一次走進爵士。", None),
+]
+TL_MORE.update({
+"2008": ("now", "Herbie Hancock 從 1960 年代就在 Miles Davis 的樂團裡，一路玩過電子、放克、嘻哈。這張向創作歌手 Joni Mitchell 致敬的專輯，找來 Norah Jones、Tina Turner 等歌手合作，安靜又細膩，在 2008 年的葛萊美打敗了一群流行巨星。", ("River", "專輯同名曲，Corinne Bailey Rae 演唱"), ["herbie-hancock", "wayne-shorter"]),
+"2011": ("now", "Esperanza Spalding 一邊彈低音大提琴一邊唱歌，曲風混合爵士、巴西音樂和靈魂樂。2011 年她拿下葛萊美最佳新人，同一個獎項的入圍者還有當紅的 Justin Bieber，消息一出，很多人第一次聽到她的名字。", ("Little Fly", "《Chamber Music Society》，2010"), []),
+"2015": ("now", "Kamasi Washington 來自洛杉磯，跟饒舌歌手 Kendrick Lamar 合作過。《The Epic》有合唱團、弦樂團和兩組鼓，聲音巨大又帶著靈性，讓人想起 Coltrane。它證明了在串流時代，一張將近三小時的爵士唱片也能找到年輕的聽眾。", ("Change of the Guard", "《The Epic》第一首"), ["john-coltrane"]),
+})
