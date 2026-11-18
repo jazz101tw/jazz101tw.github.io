@@ -1,0 +1,128 @@
+{
+ "village": {
+  "file": "village.jpg",
+  "title": "Village_Vanguard_2018.jpg",
+  "artist": "Alwin Tong",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Village_Vanguard_2018.jpg"
+ },
+ "rollins": {
+  "file": "rollins.jpg",
+  "title": "Sonny_Rollins_1974_press_photo.jpg",
+  "artist": "Distributed by Milestone Records",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Sonny_Rollins_1974_press_photo.jpg"
+ },
+ "vangelder": {
+  "file": "vangelder.jpg",
+  "title": "RogerDawsonSeptet_(cropped_-_Rudy_Van_Gelder).jpg",
+  "artist": "Stephborel",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:RogerDawsonSeptet_(cropped_-_Rudy_Van_Gelder).jpg"
+ },
+ "bridge": {
+  "file": "bridge.jpg",
+  "title": "Williamsburg_Bridge_full.jpg",
+  "artist": "Praneeth Thalla",
+  "license": "CC BY-SA 4.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Williamsburg_Bridge_full.jpg"
+ },
+ "koln": {
+  "file": "koln.jpg",
+  "title": "Keith_Jarrett.jpg",
+  "artist": "Published by ABC/Impulse! Records. Photographer uncredited a",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Keith_Jarrett.jpg"
+ },
+ "coltrane": {
+  "file": "coltrane.jpg",
+  "title": "John_Coltrane_1963_cropped_ver2.jpg",
+  "artist": "Gelderen, Hugo van / Anefo",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:John_Coltrane_1963_cropped_ver2.jpg"
+ },
+ "evans": {
+  "file": "evans.jpg",
+  "title": "Bill_Evans_(1961_publicity_photo_by_Steve_Schapiro).jpg",
+  "artist": "Steve Schapiro",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Bill_Evans_(1961_publicity_photo_by_Steve_Schapiro).jpg"
+ },
+ "louis-armstrong": {
+  "file": "louis-armstrong.jpg",
+  "title": "Louis_Armstrong_in_Color_(restored).jpg",
+  "artist": "Harry Warnecke / Gus Schoenbaechler",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Louis_Armstrong_in_Color_(restored).jpg"
+ },
+ "duke-ellington": {
+  "file": "duke-ellington.jpg",
+  "title": "Duke_Ellington_-_publicity.JPG",
+  "artist": "Unknown authorUnknown author",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Duke_Ellington_-_publicity.JPG"
+ },
+ "charlie-parker": {
+  "file": "charlie-parker.jpg",
+  "title": "Portrait_of_Charlie_Parker_in_1947.jpg",
+  "artist": "William P. Gottlieb",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Portrait_of_Charlie_Parker_in_1947.jpg"
+ },
+ "billie-holiday": {
+  "file": "billie-holiday.jpg",
+  "title": "Portrait_of_Billie_Holiday_and_Mister,_Downbeat,_New_York,_N.Y.,_ca._Feb._1947_(LOC,_5020400274,_cropped).jpg",
+  "artist": "William P. Gottlieb",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Portrait_of_Billie_Holiday_and_Mister,_Downbeat,_New_York,_N.Y.,_ca._Feb._1947_(LOC,_5020400274,_cropped).jpg"
+ },
+ "ella-fitzgerald": {
+  "file": "ella-fitzgerald.jpg",
+  "title": "Ella_Fitzgerald_6_(cropped).jpg",
+  "artist": "Carl Van Vechten",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Ella_Fitzgerald_6_(cropped).jpg"
+ },
+ "thelonious-monk": {
+  "file": "thelonious-monk.jpg",
+  "title": "Thelonious_Monk,_Minton's_Playhouse,_New_York,_N.Y.,_ca._Sept._1947_(William_P._Gottlieb_06191).jpg",
+  "artist": "William P. Gottlieb / Adam Cuerden",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Thelonious_Monk,_Minton%27s_Playhouse,_New_York,_N.Y.,_ca._Sept._1947_(William_P._Gottlieb_06191).jpg"
+ },
+ "miles-davis": {
+  "file": "miles-davis.jpg",
+  "title": "Miles_Davis_by_Palumbo_cropped.jpg",
+  "artist": "Tom Palumbo from New York City, USA",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Miles_Davis_by_Palumbo_cropped.jpg"
+ },
+ "art-blakey": {
+  "file": "art-blakey.jpg",
+  "title": "Art_blakey_studio_portrait.jpg",
+  "artist": "Distributed by Shaw Artists Corporation",
+  "license": "Public domain",
+  "page": "https://commons.wikimedia.org/wiki/File:Art_blakey_studio_portrait.jpg"
+ },
+ "charles-mingus": {
+  "file": "charles-mingus.jpg",
+  "title": "Charles_Mingus_1976_cropped.jpg",
+  "artist": "Charles_Mingus_1976.jpg: Tom Marcello Webster, New York, USA",
+  "license": "CC BY-SA 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Charles_Mingus_1976_cropped.jpg"
+ },
+ "wayne-shorter": {
+  "file": "wayne-shorter.jpg",
+  "title": "Wayne-Shorter_in_Amsterdam,_1980.jpg",
+  "artist": "Chris Hakkens",
+  "license": "CC BY 2.0",
+  "page": "https://commons.wikimedia.org/wiki/File:Wayne-Shorter_in_Amsterdam,_1980.jpg"
+ },
+ "herbie-hancock": {
+  "file": "herbie-hancock.jpg",
+  "title": "Herbie_Hancock_2023.jpg",
+  "artist": "Library of Congress Life",
+  "license": "CC0",
+  "page": "https://commons.wikimedia.org/wiki/File:Herbie_Hancock_2023.jpg"
+ }
+}
