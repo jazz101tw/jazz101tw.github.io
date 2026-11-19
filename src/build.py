@@ -459,8 +459,15 @@ def foot(p='', js=''):
 def letter():
     return f'<section class="letter" id="letter"><h2>每兩週，一張唱片。</h2><p>電子報〈慢慢聽〉每期只講一張爵士唱片：那天在哪裡錄、台上是誰、你該聽哪一段。不用懂樂理，戴上耳機照著聽。</p><a class="btn" href="{SUB_HREF}" target="_blank" rel="noopener">{SUB_TXT}</a></section>'
 
+def clean_artist(a):
+    import re
+    a = re.sub(r'^[^:]*\.jpg:\s*', '', a)
+    if 'nknown author' in a or a.startswith('Anonymous'):
+        return '作者不詳'
+    a = a.replace('Photographer uncredited a', '攝影者未具名').strip()
+    return a
 def credit(ph):
-    return f'照片：{e(ph["artist"])}，{e(ph["license"])}，Wikimedia Commons' if ph else ''
+    return f'照片：{e(clean_artist(ph["artist"]))}，{e(ph["license"])}，Wikimedia Commons' if ph else ''
 
 COL = ['#a97a2b', '#8c2f2b', '#2f5d6b', '#c9b48a', '#4b3a6b', '#6d7a3a', '#b4532a', '#3e6b52', '#7a2f4f', '#5a6e8c']
 def img(ph, pre, cls='', alt='', i=0):
