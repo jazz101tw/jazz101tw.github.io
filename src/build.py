@@ -488,11 +488,51 @@ open(os.path.join(OUT, 'style.css'), 'w', encoding='utf-8').write(CSS + CSS2)
 open(os.path.join(OUT, 'player.js'), 'w', encoding='utf-8').write(PLAYER)
 shutil.copy(os.path.join(HERE, 'audio.js'), os.path.join(OUT, 'audio.js'))
 AUD = lambda p: f'<script src="{p}audio.js"></script>'
+PW = os.environ.get('JAZZ_PAYWALL') == '1'   # 會員制試做版
+FREE_DEMOS = {'swing', 'blues', 'iivi'}
+def LOCK(p, what, short=False):
+    if short:
+        return f'<a class="lockmini" href="{p}members.html">🔒 {e(what)}：深夜場會員限定</a>'
+    return (f'<div class="lock"><div class="lk-ic" aria-hidden="true">🔒</div><b>{e(what)}是〈深夜場〉會員內容</b>'
+            f'<p>加入會員看完整版：全部故事全文、展品完整說明與先聽一首、十個聲音示範、每週導聆課、台北爵士週報。</p>'
+            f'<a class="btn" href="{p}members.html">看會員方案</a></div>')
+if PW:
+    NAV.insert(0, ('members.html', '深夜場', 'members'))
+    _nav0 = nav
+    def nav(p, cur=''):
+        return _nav0(p, cur) + f'<div class="pwbar">會員制試做版・還沒公開，只是給你看效果・<a href="https://jazz101tw.github.io/">正式網站</a></div>'
+open(os.path.join(OUT, 'style.css'), 'a', encoding='utf-8').write(r"""
+.lock{max-width:620px;margin:34px auto;padding:30px 28px;border-radius:22px;text-align:center;background:linear-gradient(160deg,#172033,#2a2018);color:#f5ebdd;position:relative}
+.lock:before{content:"";position:absolute;left:0;right:0;top:-90px;height:90px;background:linear-gradient(transparent,var(--paper));pointer-events:none}
+.lock .lk-ic{font-size:26px}
+.lock b{display:block;font-size:20px;margin-top:6px}
+.lock p{color:#cfc6b6;font-size:15px;line-height:1.8;margin:10px 0 18px}
+.lock .btn{background:#d6aa60;color:#1d1408}
+.lockmini{display:inline-block;margin-top:10px;font-size:14px;color:var(--brass);text-decoration:none;border:1px dashed var(--brass);border-radius:999px;padding:5px 14px}
+.demo.locked{opacity:.92}
+.demo.locked .cells,.demo.locked .dctl{display:none}
+.step.locked{opacity:.55}
+.pwbar{background:#d6aa60;color:#1d1408;text-align:center;font-size:13px;padding:6px 12px}
+.pwbar a{color:#1d1408}
+.plans{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;margin-top:30px}
+.plan{border:1px solid var(--hair);border-radius:20px;padding:24px}
+.plan.hot{border-color:var(--brass);box-shadow:0 0 0 2px var(--brass) inset}
+.plan b{font-size:18px}
+.plan .pr{font-size:30px;font-weight:700;margin:8px 0}
+.plan p{color:var(--graphite);font-size:14px;line-height:1.7}
+.bens{margin-top:30px;border-top:1px solid var(--hair)}
+.ben{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid var(--hair)}
+.ben i{font-style:normal;font-size:22px}
+.ben b{font-size:17px}
+.ben p{color:var(--graphite);font-size:15px;line-height:1.7;margin-top:2px}
+""") if PW else None
 
 # ---------- 故事頁 ----------
 for i, s in enumerate(S):
     body = ''
     for n, (h, ps) in enumerate(s['sections']):
+        if PW and n >= 2:
+            body += LOCK('../', '這篇故事的後半段'); break
         body += f'<h2>{e(h)}</h2>' + ''.join(f'<p>{e(x)}</p>' for x in ps)
         if n == 1 and s.get('pull'):
             body += f'<blockquote class="pull">{e(s["pull"])}</blockquote>'
@@ -501,8 +541,10 @@ for i, s in enumerate(S):
     tr = ''
     for n, (a, b) in enumerate(s['listen'], 1):
         song = a if not a.startswith(('再', '注意', 'Part', '聽他', '比一比', '同一首')) else ''
+        if PW and n > 1:
+            tr += f'<div class="tr"><div class="n">{n}</div><div><b>{e(a)}</b>{LOCK("../", "完整聽法", True)}</div></div>'; continue
         tr += f'<div class="tr"><div class="n">{n}</div><div><b>{e(a)}</b><p>{e(b)}</p>{links(song) if song else ""}</div></div>'
-    more = ''.join(f'<li>{e(m)}</li>' for m in s['more'])
+    more = ''.join(f'<li>{e(m)}</li>' for m in s['more']) if not PW else f'<li>{LOCK("../", "延伸聽", True)}</li>'
     prev = S[i - 1] if i > 0 else None
     nxt = S[i + 1] if i < len(S) - 1 else None
     pn = '<div class="pn">' + (f'<a href="{prev["slug"]}.html"><small>上一篇</small>{e(prev["title"])}</a>' if prev else '<span></span>') + (f'<a href="{nxt["slug"]}.html"><small>下一篇</small>{e(nxt["title"])}</a>' if nxt else '<span></span>') + '</div>'
@@ -515,7 +557,7 @@ for i, s in enumerate(S):
     if s.get('words'):
         chips += '<h3>這篇用到的名詞</h3>' + ''.join(f'<a href="../words.html#{w}">{e(WBY[w][1])}</a>' for w in s['words'] if w in WBY)
     chips += '</section>'
-    dm = f'<section class="ademo"><h2>先用耳朵聽懂</h2>{demo_card(s["demo"])}</section>' if s.get('demo') else ''
+    dm = f'<section class="ademo"><h2>先用耳朵聽懂</h2>{demo_card(s["demo"])}</section>' if s.get('demo') and (not PW or s['demo'] in FREE_DEMOS) else ''
     page = HEAD.format(title=e(s['title']) + '｜爵士101', desc=e(s['dek']), p='../', ogimg=(f'<meta property="og:image" content="../img/{ph["file"]}">' if ph else '')) + nav('../', 'stories') + \
         f'<header class="ahead"><div class="yearbig">{e(s["year"])}</div><h1>{e(s["title"])}</h1><p class="dek">{e(s["dek"])}</p><p class="rt">約 {s["chars"]:,} 字・閱讀約 {e(s["read"])}</p></header>{hero}{facts}' + \
         f'<article class="body">{body}</article>{dm}' + \
@@ -531,15 +573,17 @@ def phead(t, d):
 steps = ''
 for n, (alb, art, yr, why, song, lf, st) in enumerate(START):
     stl = f'<a class="st" href="story/{st}.html">相關故事：{e(BYSLUG[st]["title"])}</a>' if st else ''
+    if PW and n >= 3:
+        steps += f'<li class="step locked"><div class="disc2" style="--c:{COL[n % len(COL)]}" aria-hidden="true"></div><div><h3>《{e(alb)}》<small>{e(art)}・{e(yr)}</small></h3>{LOCK("", "這張的聽法", True)}</div></li>'; continue
     steps += (f'<li class="step"><div class="disc2" style="--c:{COL[n % len(COL)]}" aria-hidden="true"></div><div><h3>《{e(alb)}》<small>{e(art)}・{e(yr)}</small></h3>'
               f'<p>{e(why)}</p><p class="lf"><b>先聽〈{e(song)}〉</b>：{e(lf)}</p><div class="tr" style="border:0;padding:6px 0 0;display:block">{links(art + " " + song)}</div>{stl}</div></li>')
-br = ''.join(f'<div><b>{e(a)}</b><span>{e(b)}</span></div>' for a, b in BRANCH)
+br = ''.join(f'<div><b>{e(a)}</b><span>{e(b) if not PW else LOCK("", "推薦", True)}</span></div>' for a, b in BRANCH)
 W('', 'start.html', HEAD.format(title='入門路線｜爵士101', desc='第一次聽爵士，照這十張的順序聽。', p='', ogimg='') + nav('', 'start') +
   phead('第一次聽爵士，照這十張的順序。', '從最好入口的開始，一張比一張多一點東西。每張只要先聽一首，知道該注意什麼就好。') +
   f'<div class="wrap"><ol class="path">{steps}</ol><section class="sec" style="padding-top:60px"><h2>聽完十張之後</h2><p class="lede">看你最喜歡哪一種，往那個方向繼續。</p><div class="branch">{br}</div></section></div>' + letter() + foot())
 
 # ---------- 聽懂爵士 ----------
-cards = ''.join(demo_card(i) for i in DEMO_ORDER)
+cards = ''.join(demo_card(i) if (not PW or i in FREE_DEMOS) else demo_card(i).replace('class="demo"', 'class="demo locked"', 1).replace('data-demo="' + i + '"', 'data-demo="x-' + i + '"').replace('<p class="hint">', LOCK('', '這個示範', True) + '<p class="hint" hidden>') for i in DEMO_ORDER)
 W('', 'listen.html', HEAD.format(title='聽懂爵士｜爵士101', desc='十個可以按的聲音示範：搖擺、走路低音、藍調、二五一、Giant Steps。', p='', ogimg='') + nav('', 'listen') +
   phead('不用懂樂理，用耳朵聽懂爵士。', '十個可以按的聲音示範。每一個都在你的瀏覽器裡現場彈出來，可以切換比較。建議戴耳機。') +
   f'<div class="wrap"><div class="demos">{cards}</div></div>' + letter() + foot('', AUD('')))
@@ -575,7 +619,7 @@ pg = ''
 for n, (sl, en, zh, yrs, ins, one, bio, (song, where)) in enumerate(PEOPLE):
     rel = ''.join(f'<div class="rel">相關故事：<a href="story/{s["slug"]}.html">{e(s["title"])}</a></div>' for s in STORY_OF.get(sl, [])[:2])
     pg += (f'<article class="person" id="{sl}">{portrait(sl, en, ins, n)}<h3>{e(en)}</h3><div class="meta">{e(zh)}・{e(yrs)}・{e(ins)}</div>'
-           f'<p class="one">{e(one)}</p><p class="bio">{e(bio)}</p><p class="first">先聽：<a href="https://music.apple.com/search?term={e(q(en + " " + song))}" target="_blank" rel="noopener">〈{e(song)}〉</a>　<span class="meta">{e(where)}</span></p>{rel}</article>')
+           f'<p class="one">{e(one)}</p>' + (LOCK('', '完整介紹與先聽', True) + '</article>' if PW else f'<p class="bio">{e(bio)}</p><p class="first">先聽：<a href="https://music.apple.com/search?term={e(q(en + " " + song))}" target="_blank" rel="noopener">〈{e(song)}〉</a>　<span class="meta">{e(where)}</span></p>{rel}</article>'))
 W('', 'people.html', HEAD.format(title='樂手｜爵士101', desc='十五位改變爵士的人，各用一段話認識，附上先聽哪一首。', p='', ogimg='') + nav('', 'people') +
   phead('十五個改變爵士的人。', '依出生年份排列。每個人先記住一句話，再聽一首。') + f'<div class="wrap"><div class="pgrid">{pg}</div></div>' + letter() + foot())
 
@@ -604,7 +648,8 @@ EXH = []
 for n, (y, ti, d, st) in enumerate(TIMELINE):
     era, more, (song, sn), ppl = TL_MORE[y]
     ph = tlph(y)
-    EXH.append({'id': 'y' + y, 'y': y, 't': ti, 'd': d, 'm': more, 'era': era, 'song': song, 'sn': sn,
+    if PW: more, song, sn = '', '', ''
+    EXH.append({'id': 'y' + y, 'y': y, 't': ti, 'd': d, 'm': more, 'era': era, 'song': song, 'sn': sn, 'lk': PW,
                 'img': ('img/' + ph['file']) if ph else '', 'cr': credit(ph) if ph else '',
                 'st': ({'href': f'story/{st}.html', 't': BYSLUG[st]['title']} if st else None),
                 'pp': [{'id': x, 'n': PBY[x][1], 'img': ('img/' + META[PPH.get(x, x)]['file']) if META.get(PPH.get(x, x)) else ''} for x in ppl if x in PBY]})
@@ -628,6 +673,7 @@ function show(i){cur=(i+X.length)%X.length;var x=X[cur];
  dlg.querySelector('.xi').innerHTML=x.img?'<img src="'+x.img+'" alt=""><small>'+x.cr+'</small>':'<div class="ph">'+x.y+'</div>';
  dlg.querySelector('.xy').textContent=x.y;dlg.querySelector('.xt').textContent=x.t;dlg.querySelector('.xd').textContent=x.d;dlg.querySelector('.xm').textContent=x.m;
  dlg.querySelector('.xs').innerHTML='<b>先聽一首：〈'+x.song+'〉</b><span>'+x.sn+'</span><span class="lk"><a target="_blank" rel="noopener" href="https://music.apple.com/search?term='+q(x.song)+'">Apple Music</a><a target="_blank" rel="noopener" href="https://open.spotify.com/search/'+q(x.song)+'">Spotify</a></span>';
+ if(x.lk){dlg.querySelector('.xs').innerHTML='<a class="btn" href="members.html">🔒 展品完整說明與先聽一首：深夜場會員限定</a>'}
  dlg.querySelector('.xp').innerHTML=(x.pp.length?'<h4>這件展品裡的人</h4>'+x.pp.map(function(p){return '<a href="people.html#'+p.id+'">'+(p.img?'<img src="'+p.img+'" alt="">':'')+p.n+'</a>'}).join(''):'')+(x.st?'<a class="story" href="'+x.st.href+'">讀完整故事：'+x.st.t+'</a>':'');
  dlg.querySelector('.xc').textContent='展品 '+(cur+1)+' / '+X.length;
  if(!dlg.open)dlg.showModal();dlg.querySelector('.xbody').scrollTop=0;history.replaceState(null,'','#'+x.id)}
@@ -659,6 +705,34 @@ for (cat, desc, items) in SHOP:
 W('', 'shop.html', HEAD.format(title='選品｜爵士101', desc='開始聽爵士需要的唱片、書和器材。', p='', ogimg='') + nav('', 'shop') +
   phead('開始聽爵士，需要的東西不多。', '幾張唱片、一兩本書、一副能聽見貝斯的耳機。這裡是我們挑的起點。') +
   f'<div class="wrap"><div class="shop">{sh}</div><p class="note2">爵士101 自己的周邊（帆布袋、明信片、唱片標籤貼紙）正在設計中，做好會先通知電子報讀者。</p></div>' + letter() + foot())
+
+# ---------- 深夜場（只在試做版） ----------
+if PW:
+    BEN = [('📖','網站完整版','線上展每件展品的完整說明與先聽一首、6 篇長篇故事全文、15 位樂手完整介紹、入門路線 10 張全部。'),
+           ('🎧','每週導聆課','一張唱片照時間碼帶著聽：「2:14 貝斯開始跟鋼琴對話」，附 Jim 的一段話。'),
+           ('🗓','台北爵士週報','每週五：本週 3–5 場演出精選、對新手友善的酒吧、低消資訊。'),
+           ('🎹','全部聲音示範','10 個可以按的示範全開，每月新增 1 個。'),
+           ('🗣','展廳語音導覽','每個展廳 1 分鐘耳機導覽，像真的在美術館。'),
+           ('🎷','伴奏音軌','藍調、二五一、標準曲和弦進行，可調速度，拿樂器跟著練即興。'),
+           ('📀','每期歌單','跟著導聆課一起聽的 Spotify／Apple Music 歌單。'),
+           ('📕','唱片小冊 PDF','每月一張唱片做成可列印的小冊。'),
+           ('🖼','展品桌布','手機與電腦桌布，每年一張年度海報。'),
+           ('⏩','新展品搶先看','新故事、新展廳先給會員看一週。'),
+           ('🗳','選題投票','決定下個月的導聆課和新展品。'),
+           ('✉️','讀者問答','每月挑會員的問題回答一封。'),
+           ('💬','會員社群','分享這週聽了什麼。'),
+           ('🎟','聽音樂會','每月線上一起聽；每季一場黑膠聽音會，會員優先、折扣。'),
+           ('🏷','合作店家優惠','唱片行、爵士酒吧、樂器行的會員折扣。')]
+    bens = ''.join(f'<div class="ben"><i aria-hidden="true">{a}</i><div><b>{e(b)}</b><p>{e(c)}</p></div></div>' for a, b, c in BEN)
+    plans = ('<div class="plans">'
+             '<div class="plan"><b>慢慢聽</b><div class="pr">免費</div><p>雙週電子報、網站預覽、小辭典、三個聲音示範。</p></div>'
+             '<div class="plan hot"><b>深夜場・月繳</b><div class="pr">NT$150<small>／月</small></div><p>上面 15 項權益全部。</p></div>'
+             '<div class="plan"><b>深夜場・年繳</b><div class="pr">NT$1,500<small>／年</small></div><p>等於送兩個月。前 100 位創始會員 NT$1,200，續訂不漲價。</p></div>'
+             '<div class="plan"><b>贊助者</b><div class="pr">NT$3,600<small>／年</small></div><p>每年一場實體聽音會免費、名字列在線上展贊助牆。</p></div></div>')
+    W('', 'members.html', HEAD.format(title='深夜場｜爵士101 會員', desc='爵士101 會員方案：完整線上展、每週導聆課、台北爵士週報。', p='', ogimg='') + nav('', 'members') +
+      phead('深夜場：陪你把爵士聽進去。', '免費的部分告訴你發生了什麼；會員有人帶著聽、知道這週台北去哪聽、到現場一起聽。') +
+      f'<div class="wrap" style="max-width:900px">{plans}<section class="sec"><h2>會員可以拿到的 15 件事</h2><div class="bens">{bens}</div></section>'
+      f'<p class="note2">會員方案準備中，開放時會先通知電子報讀者和 IG 追蹤者。</p></div>' + letter() + foot())
 
 # ---------- 首頁 ----------
 f0 = S[0]
