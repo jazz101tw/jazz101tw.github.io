@@ -446,7 +446,7 @@ HEAD = """<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><me
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{p}style.css"></head><body>"""
 
-NAV = [('index.html#stories', '故事', 'stories'), ('start.html', '入門路線', 'start'), ('listen.html', '聽懂爵士', 'listen'), ('people.html', '樂手', 'people'),
+NAV = [('index.html#stories', '故事', 'stories'), ('shorts.html', '一分鐘故事', 'shorts'), ('start.html', '入門路線', 'start'), ('listen.html', '聽懂爵士', 'listen'), ('people.html', '樂手', 'people'),
        ('words.html', '小辭典', 'words'), ('timeline.html', '線上展', 'timeline'), ('shop.html', '選品', 'shop'), ('index.html#letter', '電子報', 'letter')]
 def nav(p, cur=''):
     links = ''.join(f'<a href="{p}{h}"{" class=cur aria-current=page" if k == cur else ""}>{t}</a>' for h, t, k in NAV)
@@ -747,6 +747,86 @@ doors = ('<div class="doors">'
          f'<a href="words.html"><b>查名詞</b><span>{len(WORDS)} 個名詞，用白話講清楚。</span><i>小辭典</i></a></div>')
 pmini = ''.join(f'<a href="start.html"><div class="disc2" style="--c:{COL[n % len(COL)]}" aria-hidden="true"></div><b>{n+1}．《{e(a)}》</b><span>{e(b)}・{e(y)}</span></a>' for n, (a, b, y, *_r) in enumerate(START[:6]))
 tlm = ''.join(f'<a href="timeline.html#y{y}" class="{"has" if st else ""}">{(f"<img src='img/{tlph(y)['file']}' alt='' loading='lazy'>" if tlph(y) else "")}<b>{e(y)}</b><span>{e(t)}</span></a>' for (y, t, d, st) in TIMELINE)
+
+# ---------- 一分鐘故事（IG 40 集的網站版）----------
+from shorts_deep import DEEP, FREE as SHORT_FREE
+SH = json.load(open(os.path.join(HERE, 'shorts.json'), encoding='utf-8'))
+os.makedirs(os.path.join(OUT, 'short'), exist_ok=True)
+os.makedirs(os.path.join(OUT, 'img', 'short'), exist_ok=True)
+for x in SH:
+    for ph in x['photos']:
+        shutil.copy(os.path.join(IMGSRC, ph['file']), os.path.join(OUT, 'img', ph['file']))
+def shcredit(ph):
+    return f'照片：{e(ph["artist"])}，{e(ph["license"])}，{e(ph["src"])}'
+open(os.path.join(OUT, 'style.css'), 'a', encoding='utf-8').write(r"""
+.shgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:22px;margin-top:34px}
+.shc{text-decoration:none;color:var(--ink);display:block}
+.shc .im{aspect-ratio:4/3;border-radius:16px;overflow:hidden;background:var(--wash);position:relative}
+.shc img{width:100%;height:100%;object-fit:cover;filter:saturate(.92);transition:transform .5s}
+.shc:hover img{transform:scale(1.04)}
+.shc .no{position:absolute;left:10px;top:10px;background:rgba(18,18,20,.72);color:#f3e7d3;font-size:12px;padding:3px 9px;border-radius:999px;letter-spacing:.04em}
+.shc .tag{position:absolute;right:10px;top:10px;background:#d6aa60;color:#1d1408;font-size:12px;padding:3px 9px;border-radius:999px}
+.shc b{display:block;font-size:17px;margin-top:12px;line-height:1.4}
+.shc p{color:var(--graphite);font-size:14px;line-height:1.7;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.shead{max-width:720px;margin:0 auto;padding:56px 22px 10px}
+.shead small{color:var(--brass);font-size:13px;letter-spacing:.06em}
+.shead h1{font-size:clamp(30px,6vw,46px);line-height:1.2;margin-top:8px}
+.shead .dek{font-size:19px;line-height:1.7;color:var(--graphite);margin-top:14px}
+.shero{max-width:860px;margin:26px auto 0;padding:0 22px}
+.shero img{width:100%;border-radius:20px;max-height:560px;object-fit:cover}
+.shero .credit{font-size:12px;color:var(--graphite);margin-top:8px}
+.sbody{max-width:680px;margin:0 auto;padding:10px 22px}
+.sbody h2{font-size:22px;margin:44px 0 14px}
+.sbody p{font-size:18px;line-height:2;margin-bottom:16px}
+.sbody figure{margin:28px 0}.sbody figure img{width:100%;border-radius:16px}.sbody figcaption{font-size:12px;color:var(--graphite);margin-top:6px}
+.full{border-top:1px solid var(--hair);margin-top:40px}
+.full .badge{display:inline-block;font-size:12px;color:var(--brass);border:1px solid var(--brass);border-radius:999px;padding:2px 10px;margin-top:34px}
+.lis{background:var(--wash);border-radius:18px;padding:20px 22px;margin:10px 0 24px}
+.lis b{font-size:18px}.lis p{font-size:16px;margin:6px 0 10px;line-height:1.8}
+.lis a{color:var(--brass);text-decoration:none;margin-right:16px;font-size:14px}
+.sbody details{border:1px solid var(--hair);border-radius:14px;padding:14px 18px;margin:14px 0}
+.sbody summary{cursor:pointer;font-weight:600}
+.sbody .en p{font-size:15px;line-height:1.8;color:var(--graphite);margin:8px 0}
+.sbody .notes{font-size:14px;line-height:1.9;color:var(--graphite)}
+.sbody .notes a{color:var(--brass);word-break:break-all}
+""")
+def short_page(i, x):
+    ep = x['ep']; free = ep in SHORT_FREE
+    deep, (song, point) = DEEP[ep]
+    z = x['zh']; n = len(z); a = max(1, n // 3); b = max(a + 1, 2 * n // 3)
+    paras = [''.join(z[:a]), ''.join(z[a:b]), ''.join(z[b:])]
+    ph = x['photos']
+    body = f'<h2>故事</h2>' + ''.join(f'<p>{e(t)}</p>' for t in paras[:2])
+    if len(ph) > 1:
+        body += f'<figure><img src="../img/{ph[1]["file"]}" alt="" loading="lazy"><figcaption>{shcredit(ph[1])}</figcaption></figure>'
+    body += f'<p>{e(paras[2])}</p>'
+    full = '<section class="full"><span class="badge">完整版</span>'
+    if PW and not free:
+        full += LOCK('../', '這篇的完整版') + '</section>'
+    else:
+        full += '<h2>故事後面</h2>' + ''.join(f'<p>{e(t)}</p>' for t in deep)
+        if len(ph) > 2:
+            full += f'<figure><img src="../img/{ph[2]["file"]}" alt="" loading="lazy"><figcaption>{shcredit(ph[2])}</figcaption></figure>'
+        full += f'<h2>這樣聽</h2><div class="lis"><b>{e(song)}</b><p>{e(point)}</p>{links(song)}</div>'
+        full += '<details class="en"><summary>逐句英文</summary>' + ''.join(f'<p>{e(t)}</p>' for t in x['en']) + '</details>'
+        full += '<details><summary>查證筆記與出處</summary><div class="notes"><p>' + e(x['note']) + '</p><p>' + '<br>'.join(f'<a href="{e(u)}" target="_blank" rel="noopener">{e(u)}</a>' for u in x['srcs']) + '</p></div></details></section>'
+    prev = SH[i - 1] if i > 0 else None; nxt = SH[i + 1] if i < len(SH) - 1 else None
+    pn = '<div class="pn">' + (f'<a href="ep{prev["ep"]}.html"><small>上一則</small>{e(prev["title"])}</a>' if prev else '<span></span>') + (f'<a href="ep{nxt["ep"]}.html"><small>下一則</small>{e(nxt["title"])}</a>' if nxt else '<span></span>') + '</div>'
+    hero = f'<div class="shero"><img src="../img/{ph[0]["file"]}" alt="{e(x["title"])}"><p class="credit">{shcredit(ph[0])}</p></div>' if ph else ''
+    page = HEAD.format(title=e(x['title']) + '｜爵士101 一分鐘故事', desc=e(x['hook']), p='../', ogimg=(f'<meta property="og:image" content="../img/{ph[0]["file"]}">' if ph else '')) + nav('../', 'shorts') + \
+        f'<header class="shead"><small>一分鐘故事 No.{ep}</small><h1>{e(x["title"])}</h1><p class="dek">{e(x["hook"])}</p></header>{hero}' + \
+        f'<article class="sbody">{body}{full}<p class="src">一分鐘影片版在 Instagram <a href="{IG}" target="_blank" rel="noopener">@jazz101tw</a>。</p></article>{pn}{letter()}' + foot('../')
+    W('../', os.path.join('short', f'ep{ep}.html'), page)
+for i, x in enumerate(SH): short_page(i, x)
+def shcard(x, pre=''):
+    ph = x['photos'][0] if x['photos'] else None
+    tag = ('<span class="tag">免費全文</span>' if x['ep'] in SHORT_FREE else '<span class="tag">🔒 完整版</span>') if PW else ''
+    im = f'<img src="{pre}img/{ph["file"]}" alt="" loading="lazy">' if ph else ''
+    return f'<a class="shc" href="{pre}short/ep{x["ep"]}.html"><div class="im">{im}<span class="no">No.{x["ep"]}</span>{tag}</div><b>{e(x["title"])}</b><p>{e(x["hook"])}</p></a>'
+W('', 'shorts.html', HEAD.format(title='一分鐘故事｜爵士101', desc='IG 上的一分鐘爵士故事，網站版：故事全文、真實照片、延伸背景、這樣聽、出處。', p='', ogimg='') + nav('', 'shorts') +
+  '<div class="wrap">' + phead('一分鐘故事', 'IG 上一分鐘講完的爵士故事，這裡放全文和照片。每一則還有「完整版」：故事後面的背景、該聽哪一首、逐句英文和出處。') +
+  f'<div class="shgrid">{"".join(shcard(x) for x in SH)}</div></div>' + letter() + foot())
+SHMINI = ''.join(shcard(x) for x in SH[:6])
 peo = ''.join(f'<a href="people.html#{p[0]}">{portrait(p[0], p[1], p[4], n)}<b>{e(p[1])}</b><span>{e(p[4])}・{e(p[3])}</span></a>' for n, p in enumerate(PEOPLE[:8]))
 wjs = json.dumps([[w[0], w[1], w[2], w[3]] for w in WORDS], ensure_ascii=False)
 shopmini = ''.join(f'<div class="item"><b>{e(n)}</b><p>{e(d)}</p></div>' for n, d, k in [SHOP[0][2][3], SHOP[1][2][0], SHOP[2][2][0]])
@@ -759,6 +839,7 @@ index = HEAD.format(title='爵士101｜一分鐘講不完的爵士故事', desc=
     f'<div class="wrap">{doors}</div>' + \
     f'<section class="band"><div class="in">{fig}<div><small>這次先讀這篇</small><h2>{e(f0["title"])}</h2><p>{e(f0["dek"])}</p><a class="btn" href="story/{f0["slug"]}.html">讀這篇故事</a></div></div></section>' + \
     f'<div class="wrap"><section class="sec" id="stories"><h2>所有故事</h2><p class="lede">依年份排列的人、晚上和唱片。每一篇都附上「這樣聽」。</p><div class="list">{rows}</div></section>' + \
+    f'<section class="sec"><h2>一分鐘故事</h2><p class="lede">IG 上一分鐘講完的故事，這裡有全文、照片和延伸背景。</p><div class="shgrid">{SHMINI}</div><a class="more-link" href="shorts.html">看全部 {len(SH)} 則</a></section>' + \
     f'<section class="sec"><h2>第一次聽，照這個順序。</h2><p class="lede">十張唱片，一張比一張多一點東西。每張先聽一首就好。</p><div class="pathmini">{pmini}</div><a class="more-link" href="start.html">看完整的入門路線</a></section></div>' + \
     f'<section class="band"><div class="in" style="display:block"><small>聽懂爵士</small><h2>先按下去，再讀解釋。</h2><p>同一段旋律，直的和搖擺的差在哪裡？十二小節藍調長什麼樣子？用瀏覽器現場彈給你聽。</p>' + \
     f'<div class="demos">{demo_card("swing")}{demo_card("blues")}</div><a class="btn" href="listen.html">聽全部十個示範</a></div></section>' + \
