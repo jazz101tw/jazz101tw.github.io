@@ -1,0 +1,22 @@
+name: 爵士101 Reels 照片抓取（手動）
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/photofetch
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pillow
+      - run: python -u .github/photofetch/fetch.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: photos
+          path: photos/
