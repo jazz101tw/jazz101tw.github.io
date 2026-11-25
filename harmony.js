@@ -70,10 +70,26 @@ function triad(r,q){var a=[],v=vc(r,q);v.forEach(function(n,k){E(a,'piano',k*.5,
   return {ev:a,mk:[[0,nm(r,q),((r%12)+12)%12]],beats:4.5,bpm:96,sw:.5}}
 function mode(r,iv,label){var a=[],seq=iv.concat(iv.slice(0,-1).reverse());E(a,'bass',0,bassN(r)-12+12,seq.length*.5+1,.45);E(a,'arco',0,bassN(r)+7,seq.length*.5+1,.2);
   seq.forEach(function(i,k){E(a,'piano',k*.5,60+((r%12)+12)%12+i-(r%12>7?12:0),.48,.17)});return {ev:a,mk:[[0,NM[((r%12)+12)%12]+' '+label,((r%12)+12)%12]],beats:seq.length*.5+1,bpm:116,sw:.5}}
+
+function mel(ns,o){o=o||{};var a=[],b=0,mk=[];ns.forEach(function(x){var n=x[0],d=x[1]||1;if(n!=null)E(a,'piano',b,n,d*.9,.17);b+=d});
+  if(o.drone!=null){E(a,'bass',0,o.drone,b,.3)}return {ev:a,mk:mk,beats:b+.5,bpm:o.bpm||100,sw:.5,vis:'keys',home:o.home}}
+var MAJ=[0,2,4,5,7,9,11,12];
+function scale(r,o){return mel(MAJ.map(function(i){return [60+r+i,.5]}),o)}
 var KEYS=[0,2,3,5,7,8,10];
 function T(list,k){return list.map(function(c){return [c[0]+k,c[1],c[2],c[3]!=null?c[3]+k:null]})}
 var BLUES=function(k,quick,bars){var I=[0,'7',4],IV=[5,'7',4];var L=[I,quick?IV:I,I,I,IV,IV,I,[9,'7',4],[2,'m7',4],[7,'7',4],I,[7,'7',4]].slice(0,bars||12);return prog(T(L,k),{ride:1,bpm:168,comp:1})};
 var G={
+ keys12:{demos:function(){return [['十二個音一路往上',mel([60,61,62,63,64,65,66,67,68,69,70,71,72].map(function(n){return [n,.5]}))],['只彈白鍵：Do Re Mi',mel(MAJ.map(function(i){return [60+i,.5]}))]]},
+  q:function(){var a=60+Math.floor(Math.random()*12),b=a;while(b===a)b=60+Math.floor(Math.random()*12);var c=mel([[a,1],[null,.25],[b,1]],{});return {clip:c,opts:['第一個比較高','第二個比較高'],ans:a>b?0:1,why:'第一個是 '+NM[a%12]+'，第二個是 '+NM[b%12]+'。'}}},
+ home:{demos:function(){return [['回到家：停在 Do',mel([[64,.5],[65,.5],[67,1],[65,.5],[64,.5],[62,1],[60,2]],{home:60})],['沒到家：停在 Re',mel([[64,.5],[65,.5],[67,1],[65,.5],[64,.5],[60,1],[62,2]],{home:60})],['沒到家：停在 Ti',mel([[64,.5],[65,.5],[67,1],[65,.5],[64,.5],[62,1],[59,2]],{home:60})]]},
+  q:function(){var r=rnd([0,2,5,7]),end=rnd([0,0,2,-1,7]),line=[[4,.5],[5,.5],[7,1],[5,.5],[4,.5],[2,1]];var c=mel(line.map(function(x){return [60+r+x[0],x[1]]}).concat([[60+r+end,2]]),{home:60+r});
+   return {clip:c,opts:['結束了，回到家','還沒結束'],ans:end===0?0:1,why:end===0?'最後停在這個調的 Do，就是家。':'最後停在 '+({2:'Re','-1':'Ti',7:'Sol'})[end]+'，耳朵還在等下一個音。'}}},
+ stack:{demos:function(){return [['Do、Mi、Sol 一個一個疊上去',{ev:[['piano',0,60,3,.15],['piano',1,64,2,.15],['piano',2,67,1,.15],['piano',3.2,60,2,.15],['piano',3.2,64,2,.15],['piano',3.2,67,2,.15]],mk:[[3.2,'C',0]],beats:5.5,bpm:90,sw:.5,vis:'keys'}],['Re、Fa、La：另一個和弦',{ev:[['piano',0,62,3,.15],['piano',1,65,2,.15],['piano',2,69,1,.15],['piano',3.2,62,2,.15],['piano',3.2,65,2,.15],['piano',3.2,69,2,.15]],mk:[[3.2,'Dm',2]],beats:5.5,bpm:90,sw:.5,vis:'keys'}]]},
+  q:function(){var k=rnd([1,2,3]),r=60+rnd([0,2,4,5,7,9]),iv=[0,4,7].slice(0,k),a=[];iv.forEach(function(i){E(a,'piano',0,r+i,2,.15)});
+   return {clip:{ev:a,mk:[],beats:3,bpm:90,sw:.5,vis:'keys'},opts:['一個音','兩個音','三個音（和弦）'],ans:k-1,why:'同時按下了 '+k+' 個音。'+(k===3?'三個音隔一個疊起來，就是一個和弦。':'')}}},
+ circle:{demos:function(){var cyc=[0,7,2,9,4,11,6,1,8,3,10,5,0].map(function(r){return [r,'maj',1]});return [['C 大調音階',scale(0)],['G 大調音階：只多一個升 Fa',scale(7)],['沿著五度圈走一圈',(function(){var c=prog(cyc,{bpm:110});c.vis='circle';return c})()]]},
+  q:function(){var r=rnd([0,7,5]),near=Math.random()<.5,r2=near?(r+rnd([7,5]))%12:(r+6)%12;var A=scale(r),B=scale(r2),off=A.beats;B.ev.forEach(function(e){A.ev.push([e[0],e[1]+off,e[2],e[3],e[4]])});A.beats+=B.beats;
+   return {clip:A,opts:['隔壁的調（只差一個音）','很遠的調'],ans:near?0:1,why:'第一段是 '+NM[r]+' 大調，第二段是 '+NM[r2]+' 大調'+(near?'，在五度圈上是隔壁，只差一個音。':'，在五度圈的正對面，差了六個音。')}}},
  majmin:{demos:function(){return [['C 大三和弦',triad(0,'maj')],['C 小三和弦',triad(0,'min')]]},
   q:function(){var q=rnd(['maj','min']),r=rnd(KEYS);return {clip:triad(r,q),opts:['大三和弦（亮）','小三和弦（暗）'],ans:q=='maj'?0:1,why:'這是 '+nm(r,q)+(q=='maj'?'：中間那個音高半音，聽起來亮。':'：中間那個音低半音，聽起來暗。')}}},
  sevenths:{demos:function(){return [['Cmaj7 大七',triad(0,'maj7')],['C7 屬七',triad(0,'7')],['Cm7 小七',triad(0,'m7')]]},
@@ -113,7 +129,16 @@ var C={ring:'#2e3a52',txt:'#a3a8b4',on:'#e0ae55',cream:'#f2efe9'};
 function size(){var w=Math.min(cv.parentNode.clientWidth,window.innerWidth<600?300:420),r=window.devicePixelRatio||1;cv.style.width=w+'px';cv.style.height=w+'px';cv.width=w*r;cv.height=w*r;g2.setTransform(r,0,0,r,0,0);W=w}
 size();window.addEventListener('resize',size);
 function pos(pc,R){var i=ORD.indexOf(pc),a=-Math.PI/2+i*Math.PI/6;return [W/2+Math.cos(a)*R,W/2+Math.sin(a)*R]}
-function draw(){var R=W*.38,cx=W/2,now=ctx?ctx.currentTime:0;g2.clearRect(0,0,W,W);
+function drawKeys(now){var lo=55,hi=79,wk=[],x=0,kw=W/15,top=W*.3,h=W*.4;g2.clearRect(0,0,W,W);
+  var on={},home=cur&&cur.clip.home;if(cur&&cur.reveal!==false)cur.clip.ev.forEach(function(e){if(e[0]!=='piano')return;var t=cur.t0+e[1]*cur.spb;if(now>=t&&now<t+Math.max(.25,e[3]*cur.spb))on[e[2]]=1});
+  var WH=[0,2,4,5,7,9,11],pos={};for(var n=lo;n<=hi;n++)if(WH.indexOf(n%12)>=0){pos[n]=x;x+=kw}
+  var off=(W-x)/2;Object.keys(pos).forEach(function(n){n=+n;var xx=off+pos[n];g2.fillStyle=on[n]?'#e0ae55':(n===home?'#3a4660':'#f2efe9');g2.fillRect(xx+1,top,kw-2,h);
+    if(n%12===0){g2.fillStyle=on[n]?'#1d1408':'#6e6e73';g2.font='500 '+Math.round(W*.03)+'px Inter,sans-serif';g2.textAlign='center';g2.fillText(n===60?'C4':'C',xx+kw/2,top+h-W*.03)}});
+  for(n=lo;n<=hi;n++)if(WH.indexOf(n%12)<0&&pos[n-1]!=null){var xx2=off+pos[n-1]+kw*.68;g2.fillStyle=on[n]?'#e0ae55':'#111722';g2.fillRect(xx2,top,kw*.64,h*.6)}
+  var lab='';if(cur&&cur.reveal!==false&&cur.clip.mk.length){cur.clip.mk.forEach(function(m){if(cur.t0+m[0]*cur.spb<=now)lab=m[1]})}
+  g2.fillStyle=cur&&cur.reveal===false?'#a3a8b4':'#f2efe9';g2.font='600 '+Math.round(W*.09)+'px Inter,sans-serif';g2.textAlign='center';g2.textBaseline='middle';g2.fillText(cur&&cur.reveal===false?'?':(lab||(home?'家＝'+NM[home%12]:'')),W/2,W*.17);
+  requestAnimationFrame(draw)}
+function draw(){var now=ctx?ctx.currentTime:0;if((cur&&cur.clip.vis==='keys')||(!cur&&lv&&lv.vis==='keys'))return drawKeys(now);var R=W*.38,cx=W/2;g2.clearRect(0,0,W,W);
   g2.beginPath();g2.arc(cx,cx,R,0,Math.PI*2);g2.strokeStyle=C.ring;g2.lineWidth=2;g2.stroke();
   var on=null,lab='',hist=[];
   if(cur&&cur.reveal){cur.clip.mk.forEach(function(m){if(cur.t0+m[0]*cur.spb<=now)hist.push(m)});if(hist.length){on=hist[hist.length-1][2];lab=hist[hist.length-1][1]}}
@@ -131,11 +156,11 @@ var $=function(s){return document.querySelector(s)},$$=function(s){return [].sli
 var lv=null,Q=null,stage=$('#stage');
 function stars(n){var s='';for(var i=0;i<3;i++)s+='<i class="'+(i<n?'on':'')+'" aria-hidden="true">★</i>';return '<span class="stars" aria-label="'+n+' 顆星">'+s+'</span>'}
 function refreshMap(){$$('.lvl').forEach(function(a){var s=SAVE[a.dataset.id]||0;a.querySelector('.st').innerHTML=stars(s);a.classList.toggle('done',s>0);a.classList.toggle('cur',lv&&lv.id===a.dataset.id)});
-  var tot=LV.reduce(function(n,r){return n+(SAVE[r.id]||0)},0),done=LV.filter(function(r){return SAVE[r.id]}).length;$('#tot').textContent=done+' / 9 關，'+tot+' 顆星'}
+  var tot=LV.reduce(function(n,r){return n+(SAVE[r.id]||0)},0),done=LV.filter(function(r){return SAVE[r.id]}).length;$('#tot').textContent=done+' / '+LV.length+' 關，'+tot+' 顆星'}
 var PLAY='<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg>';
 function setBtn(b,on){b.classList.toggle('playing',on);b.querySelector('span').textContent=on?'停止':b.dataset.l;b.setAttribute('aria-pressed',on)}
 function open(id,noScroll){stop();lv=BY[id];$('#lvnum').textContent='第 '+lv.n+' 關';$('#lvname').textContent=lv.name;$('#lven').textContent=lv.en;$('#lvone').textContent=lv.one;
-  $('#lvfact').textContent=lv.fact;$('#lvsongs').innerHTML=lv.songs.length?lv.songs.map(function(s){return '<a href="https://music.apple.com/search?term='+encodeURIComponent(s[0]+' '+s[1])+'" target="_blank" rel="noopener">'+s[0]+'〈'+s[1]+'〉</a>'}).join(''):'<span>聽任何一張爵士鋼琴三重奏，注意低音回家前的那一步。</span>';
+  $('#lvfact').textContent=lv.fact;$('#lvsongs').parentNode.hidden=!lv.songs.length;$('#lvsongs').innerHTML=lv.songs.length?lv.songs.map(function(s){return '<a href="https://music.apple.com/search?term='+encodeURIComponent(s[0]+' '+s[1])+'" target="_blank" rel="noopener">'+s[0]+'〈'+s[1]+'〉</a>'}).join(''):'';
   $('#lvep').innerHTML=lv.ep?'<a href="short/ep'+lv.ep+'.html">相關的一分鐘故事：'+lv.eptitle+'</a>':'';
   $('#lslisten').textContent=lv.listen;var box=$('#demos');box.innerHTML='';
   G[id].demos().forEach(function(d,i){var b=document.createElement('button');b.className='dplay';b.dataset.l=d[0];b.setAttribute('aria-pressed','false');b.innerHTML=PLAY+'<span>'+d[0]+'</span>';
@@ -158,6 +183,6 @@ $('#hnext').addEventListener('click',nextQ);
 function endQ(){var s=Q.ok>=5?3:Q.ok>=4?2:Q.ok>=3?1:0;if(s>(SAVE[lv.id]||0)){SAVE[lv.id]=s;save()}refreshMap();$('#hres').hidden=false;var nx=LV[lv.n]||null;
   $('#hresT').innerHTML=s?'第 '+lv.n+' 關過關 '+stars(s):'答對 '+Q.ok+' / '+NQ+'，要對三題才過關。回「聽」再比較幾次。';
   $('#hresN').hidden=!nx;if(nx){$('#hresN').textContent='下一關：'+nx.name;$('#hresN').onclick=function(){open(nx.id)}}$('#hretry').onclick=function(){show('quiz')}}
-refreshMap();var h=(location.hash||'').slice(1);open(BY[h]?h:'majmin',true);
+refreshMap();var h=(location.hash||'').slice(1);open(BY[h]?h:'keys12',true);
 
 })();
