@@ -446,7 +446,7 @@ HEAD = """<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><me
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{p}style.css"></head><body>"""
 
-NAV = [('index.html#stories', '故事', 'stories'), ('shorts.html', '一分鐘故事', 'shorts'), ('start.html', '入門路線', 'start'), ('listen.html', '聽懂爵士', 'listen'), ('rhythm.html', '節奏遊戲', 'rhythm'), ('people.html', '樂手', 'people'),
+NAV = [('index.html#stories', '故事', 'stories'), ('shorts.html', '一分鐘故事', 'shorts'), ('start.html', '入門路線', 'start'), ('listen.html', '聽懂爵士', 'listen'), ('rhythm.html', '節奏遊戲', 'rhythm'), ('harmony.html', '和聲遊戲', 'harmony'), ('people.html', '樂手', 'people'),
        ('words.html', '小辭典', 'words'), ('timeline.html', '線上展', 'timeline'), ('shop.html', '選品', 'shop'), ('index.html#letter', '電子報', 'letter')]
 def nav(p, cur=''):
     links = ''.join(f'<a href="{p}{h}"{" class=cur aria-current=page" if k == cur else ""}>{t}</a>' for h, t, k in NAV)
@@ -559,12 +559,16 @@ CSSR = r'''
 @media (max-width:760px){.rhmini{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .rhmini a{border:1px solid var(--hair);border-radius:14px;padding:12px;text-decoration:none;min-width:0}
 .rhmini a:hover{border-color:var(--brass)}
+.hdemos{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-top:16px}.hdemos .dplay{text-align:left}.hq{font-size:19px;font-weight:600;color:#f2efe9!important}.hopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:16px}
 .rhmini b{display:block;font-size:14px;font-weight:600;margin-top:6px;line-height:1.35}
 '''
 open(os.path.join(OUT, 'style.css'), 'w', encoding='utf-8').write(CSS + CSS2 + CSSR)
 open(os.path.join(OUT, 'player.js'), 'w', encoding='utf-8').write(PLAYER)
 shutil.copy(os.path.join(HERE, 'audio.js'), os.path.join(OUT, 'audio.js'))
 shutil.copy(os.path.join(HERE, 'rhythm.js'), os.path.join(OUT, 'rhythm.js'))
+_rj_src = open(os.path.join(HERE, 'rhythm.js'), encoding='utf-8').read()
+_core = _rj_src[_rj_src.index('var AC='):_rj_src.index('/* ---- 九種節奏 ---- */')]
+open(os.path.join(OUT, 'harmony.js'), 'w', encoding='utf-8').write('/* 爵士101 和聲遊戲（由 build.py 產生：聲音引擎取自 rhythm.js） */\n(function(){\n' + _core + open(os.path.join(HERE, 'harmony_body.js'), encoding='utf-8').read() + '\n})();\n')
 AUD = lambda p: f'<script src="{p}audio.js"></script>'
 PW = os.environ.get('JAZZ_PAYWALL') == '1'   # 會員制試做版
 FREE_DEMOS = {'swing', 'blues', 'iivi'}
@@ -842,6 +846,25 @@ RPAGE = (HEAD.format(title='節奏遊戲｜爵士101', desc='爵士樂的九種�
 W('', 'rhythm.html', RPAGE)
 RHMINI = ''.join(f'<a href="rhythm.html#{r["id"]}"><em>{r["n"]}</em><b>{e(r["name"])}</b></a>' for r in _rj)
 
+# ---------- 和聲遊戲 ----------
+from harmony_data import HAR
+_hj = [dict(r, n=i + 1, eptitle=_SHT.get(r['ep'], '')) for i, r in enumerate(HAR)]
+hmap = ''.join(f'<a class="lvl" data-id="{r["id"]}" href="#{r["id"]}"><em>{r["n"]}</em><b>{e(r["name"])}</b><span>{e(r["en"])}</span><span class="st"></span></a>' for r in _hj)
+HPAGE = (HEAD.format(title='和聲遊戲｜爵士101', desc='爵士樂的和弦與調性，九關：大小調、七和弦、二五一、藍調、借來的屬七、轉調、調式、三全音替代、Giant Steps。', p='', ogimg='') + nav('', 'harmony') +
+  phead('九個和聲，九關。', '和弦進行和調性，不用看譜，用耳朵學。每關先聽、再考，五度圈會亮給你看聲音走到哪裡。建議戴耳機。') +
+  f'<div class="wrap rgame"><div class="lvmap">{hmap}</div><p class="tot" id="tot"></p>'
+  '<section class="rstage" id="stage" aria-label="關卡"><div class="rs-head"><small id="lvnum"></small><h2 id="lvname"></h2><span class="en" id="lven"></span><p id="lvone"></p></div>'
+  '<div class="steps"><button data-s="listen">1 聽</button><button data-s="quiz">2 考</button></div>'
+  '<div class="rs-body"><div class="rs-wheel"><canvas id="wheel" role="img" aria-label="五度圈：亮起的是現在的和弦根音，線是剛剛走過的路"></canvas></div><div class="rs-side">'
+  '<div class="pane" data-s="listen"><p id="lslisten"></p><div class="hdemos" id="demos"></div><div class="dctl"><button class="btn2" id="tonext">下一步：考考耳朵</button></div></div>'
+  f'<div class="pane" data-s="quiz" hidden><p id="hq" class="hq"></p><div class="dctl">{pbtn("hplay", "再聽一次")}</div><div class="hopts" id="hopts"></div><p id="hfb" class="gfb" aria-live="polite"></p><button class="btn2" id="hnext" hidden>下一題</button>'
+  '<div id="hres" class="res" hidden><b id="hresT"></b><div class="dctl"><button class="dplay" id="hresN"></button><button class="btn2" id="hretry">再考一次</button></div></div></div>'
+  '<div class="rs-more"><p><b>冷知識</b><span id="lvfact"></span></p><p><b>去聽</b><span id="lvsongs"></span></p><p id="lvep"></p></div>'
+  '</div></div></section><p class="tot" style="margin-top:40px">也玩玩看<a href="rhythm.html" style="color:var(--brass)">節奏遊戲</a>：九種爵士節奏，跟著拍。</p></div>'
+  + letter() + f'<script>window.HAR={json.dumps(_hj, ensure_ascii=False)};</script><script src="harmony.js"></script>' + foot())
+W('', 'harmony.html', HPAGE)
+HMINI = ''.join(f'<a href="harmony.html#{r["id"]}"><em>{r["n"]}</em><b>{e(r["name"])}</b></a>' for r in _hj)
+
 # ---------- 首頁 ----------
 f0 = S[0]
 rows = ''.join(f'<a class="row" href="story/{s["slug"]}.html"><div class="y">{e(s["year"])}</div><div><h3>{e(s["title"])}</h3><p>{e(s["dek"])}</p></div>{img(s["ph"], "", "t", s["title"], S.index(s))}</a>' for s in sorted(S, key=lambda x: x['year']))
@@ -951,7 +974,7 @@ index = HEAD.format(title='爵士101｜一分鐘講不完的爵士故事', desc=
     f'<section class="sec"><h2>第一次聽，照這個順序。</h2><p class="lede">十張唱片，一張比一張多一點東西。每張先聽一首就好。</p><div class="pathmini">{pmini}</div><a class="more-link" href="start.html">看完整的入門路線</a></section></div>' + \
     f'<section class="band"><div class="in" style="display:block"><small>聽懂爵士</small><h2>先按下去，再讀解釋。</h2><p>同一段旋律，直的和搖擺的差在哪裡？十二小節藍調長什麼樣子？用瀏覽器現場彈給你聽。</p>' + \
     f'<div class="demos">{demo_card("swing")}{demo_card("blues")}</div><a class="btn" href="listen.html">聽全部十個示範</a></div></section>' + \
-    f'<div class="wrap"><section class="sec"><h2>爵士有九種走路的方式。</h2><p class="lede">搖擺、shuffle、巴薩諾瓦、5/4……九關節奏遊戲，每關先聽、再跟著拍、最後用耳朵猜。</p><div class="rhmini">{RHMINI}</div><a class="more-link" href="rhythm.html">開始玩節奏遊戲</a></section></div>' + \
+    f'<div class="wrap"><section class="sec"><h2>爵士有九種走路的方式。</h2><p class="lede">搖擺、shuffle、巴薩諾瓦、5/4……九關節奏遊戲，每關先聽、再跟著拍、最後用耳朵猜。</p><div class="rhmini">{RHMINI}</div><a class="more-link" href="rhythm.html">開始玩節奏遊戲</a></section><section class="sec"><h2>和弦也可以用耳朵學。</h2><p class="lede">大小調、二五一、轉調、Giant Steps……九關和聲遊戲，五度圈會亮給你看聲音走到哪裡。</p><div class="rhmini">{HMINI}</div><a class="more-link" href="harmony.html">開始玩和聲遊戲</a></section></div>' + \
     f'<div class="wrap"><section class="sec"><h2>逛一個爵士一百年的展。</h2><p class="lede">六個展廳、二十多件展品，從紐奧良的街頭走到今天。點任何一件，就能看說明、先聽一首。</p><div class="tlmini">{tlm}</div><a class="more-link" href="timeline.html">走進線上展</a></section>' + \
     f'<section class="sec"><h2>先認識這些人。</h2><p class="lede">每個人一句話、一首歌。</p><div class="pmini">{peo}</div><a class="more-link" href="people.html">看全部 {len(PEOPLE)} 位樂手</a></section>' + \
     '<section class="sec"><h2>今天學一個詞。</h2><div class="today" id="today"><div><h3 id="tw"></h3><p id="tx"></p></div><div><button id="tn">換一個</button></div></div><a class="more-link" href="words.html">打開小辭典</a></section>' + \

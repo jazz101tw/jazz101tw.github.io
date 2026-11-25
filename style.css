@@ -420,6 +420,7 @@ footer{max-width:1000px;margin:0 auto;padding:30px 22px 60px;font-size:12px;colo
 @media (max-width:760px){.rhmini{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .rhmini a{border:1px solid var(--hair);border-radius:14px;padding:12px;text-decoration:none;min-width:0}
 .rhmini a:hover{border-color:var(--brass)}
+.hdemos{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-top:16px}.hdemos .dplay{text-align:left}.hq{font-size:19px;font-weight:600;color:#f2efe9!important}.hopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:16px}
 .rhmini b{display:block;font-size:14px;font-weight:600;margin-top:6px;line-height:1.35}
 
 .shgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:22px;margin-top:34px}
