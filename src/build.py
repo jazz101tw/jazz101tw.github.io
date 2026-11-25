@@ -446,7 +446,7 @@ HEAD = """<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><me
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{p}style.css"></head><body>"""
 
-NAV = [('index.html#stories', '故事', 'stories'), ('shorts.html', '一分鐘故事', 'shorts'), ('start.html', '入門路線', 'start'), ('listen.html', '聽懂爵士', 'listen'), ('people.html', '樂手', 'people'),
+NAV = [('index.html#stories', '故事', 'stories'), ('shorts.html', '一分鐘故事', 'shorts'), ('start.html', '入門路線', 'start'), ('listen.html', '聽懂爵士', 'listen'), ('rhythm.html', '節奏遊戲', 'rhythm'), ('people.html', '樂手', 'people'),
        ('words.html', '小辭典', 'words'), ('timeline.html', '線上展', 'timeline'), ('shop.html', '選品', 'shop'), ('index.html#letter', '電子報', 'letter')]
 def nav(p, cur=''):
     links = ''.join(f'<a href="{p}{h}"{" class=cur aria-current=page" if k == cur else ""}>{t}</a>' for h, t, k in NAV)
@@ -484,9 +484,87 @@ os.makedirs(os.path.join(OUT, 'img'), exist_ok=True)
 for k, m in META.items():
     if m and os.path.exists(os.path.join(IMGSRC, m['file'])):
         shutil.copy(os.path.join(IMGSRC, m['file']), os.path.join(OUT, 'img', m['file']))
-open(os.path.join(OUT, 'style.css'), 'w', encoding='utf-8').write(CSS + CSS2)
+CSSR = r'''
+/* 節奏遊戲 */
+.rgame{padding-bottom:20px}
+.lvmap{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:8px;margin-top:8px}
+@media (max-width:900px){.lvmap{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.lvl{display:block;text-decoration:none;border:1px solid var(--hair);border-radius:16px;padding:14px 12px 12px;background:var(--paper);min-width:0}
+.lvl:hover{border-color:var(--brass)}
+.lvl em,.rhmini em{font-style:normal;font-size:30px;font-weight:200;color:var(--graphite);line-height:1;display:block;letter-spacing:-.02em}
+.lvl b{display:block;font-size:15px;font-weight:600;margin-top:8px;line-height:1.35}
+.lvl>span{display:block;font-size:12px;color:var(--graphite);line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lvl.cur{border-color:var(--brass);box-shadow:inset 0 0 0 1px var(--brass)}
+.lvl.done em{color:var(--brass)}
+.stars i{font-style:normal;color:var(--hair);font-size:13px;letter-spacing:1px}.stars i.on{color:var(--brass)}
+.tot{font-size:14px;color:var(--graphite);margin-top:12px}
+.rstage{background:var(--midnight);color:#f2efe9;border-radius:28px;margin-top:24px;padding:34px 34px 30px;scroll-margin-top:70px}
+@media (max-width:520px){.rstage{padding:24px 18px 22px;border-radius:22px}}
+.rs-head small{color:#e0ae55;font-size:14px;display:block}
+.rs-head h2{font-size:clamp(30px,5vw,46px);font-weight:700;letter-spacing:-.02em;line-height:1.15;display:inline}
+.rs-head .en{color:#8e93a0;font-size:16px;margin-left:12px;white-space:nowrap}
+.rs-head p{color:#b9bdc7;margin-top:8px;font-size:17px}
+.steps{display:inline-flex;margin-top:22px;border:1px solid #2e3a52;border-radius:999px;padding:3px;max-width:100%}
+.steps button{background:none;border:0;color:#a3a8b4;font:inherit;font-size:15px;padding:8px 18px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.steps button.on{background:#f2efe9;color:#172033}
+.rs-body{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:40px;margin-top:26px;align-items:start}
+@media (max-width:820px){.rs-body{grid-template-columns:minmax(0,1fr);gap:18px}}
+.rs-wheel{display:flex;flex-direction:column;align-items:center;min-width:0}
+#wheel{display:block}
+.tapbtn{margin-top:14px;width:100%;height:96px;border-radius:24px;border:0;background:#e0ae55;color:#1d1408;font:inherit;font-size:28px;font-weight:700;cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent;transition:transform .06s}
+.tapbtn.hit{transform:scale(.97);background:#f4cd84}
+.tapzone{width:100%;max-width:420px;text-align:center}.tapzone[hidden]{display:none}.tapline{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:10px}.tapline .tapfb{margin-top:0;text-align:left}.rs-wheel{scroll-margin-top:110px}
+.rs-side{min-width:0}
+.rs-side p{color:#c9ccd4}
+.rstage .dplay{background:#f2efe9;color:#172033}
+.rstage .dplay.playing{background:#e0ae55;color:#1d1408}
+.btn2{background:none;border:1px solid #3a4660;color:#f2efe9;font:inherit;font-size:15px;padding:9px 18px;border-radius:999px;cursor:pointer}
+.btn2:hover{border-color:#e0ae55}
+.btn2[hidden],.dplay[hidden]{display:none}
+.tapcount{font-variant-numeric:tabular-nums;color:#a3a8b4;font-size:15px}
+.tapfb{font-size:22px;font-weight:600;margin-top:16px;min-height:1.5em;color:#f2efe9!important}
+.rstage .q-perfect{color:#ecbd62!important}.rstage .q-miss,.rstage .q-off,.rstage .q-extra{color:#ec9a8c!important}
+.kbd{font-size:13px;color:#8e93a0!important;margin-top:2px}
+.res{margin-top:18px;padding:18px 20px;border-radius:18px;background:rgba(255,255,255,.06)}
+.res b{font-size:24px;font-weight:700;display:block;line-height:1.4}
+.res .meta{font-size:14px;color:#a3a8b4}
+.res .btn2,.res .dplay{margin-top:12px}
+.gab{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.gab>div{display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,.04);padding:14px;border-radius:16px;align-items:stretch}
+.gab .dplay{justify-content:center}
+.gans{background:none;border:1px solid #3a4660;color:#f2efe9;font:inherit;font-size:16px;padding:10px;border-radius:12px;cursor:pointer}
+.gans:disabled{cursor:default}
+.gans.right,.xopts button.right{background:#e0ae55;border-color:#e0ae55;color:#1d1408}
+.gans.wrong{border-color:#ec9a8c;color:#ec9a8c}
+.gfb{margin-top:14px;font-size:17px;min-height:1.6em}
+.rs-more{margin-top:26px;border-top:1px solid #2e3a52;padding-top:6px;font-size:15px}
+.rs-more p{margin-top:12px;color:#b9bdc7;line-height:1.7}
+.rs-more b{display:block;color:#f2efe9;font-size:14px;font-weight:600}
+.rs-more a{color:#ecbd62;text-decoration:none;margin-right:16px;display:inline-block}
+.rs-more a:hover{text-decoration:underline}
+.exam .dplay{margin-top:22px}
+.xopts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px;max-width:620px}
+@media (max-width:520px){.xopts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.xopts button{background:var(--paper);border:1px solid var(--hair);color:var(--ink);font:inherit;font-size:15px;padding:12px 8px;border-radius:12px;cursor:pointer}
+.xopts button.wrong{border-color:#c8695c;color:#c8695c}
+.exam #xq{font-size:19px;font-weight:600;margin:24px 0 0}
+.exam #xfb{margin-top:12px;font-size:17px;min-height:1.6em}
+.exam .btn2{color:var(--ink);border-color:var(--hair);margin-top:4px}
+.exam #xend b{display:block;font-size:20px;margin-top:20px;line-height:1.5}
+.latset{margin:56px 0 0;font-size:14px;color:var(--graphite)}
+.latset summary{cursor:pointer}
+.latset p{margin-top:8px;max-width:34em}
+.latset input{vertical-align:middle;width:min(220px,60vw)}
+.rhmini{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:8px;margin-top:30px}
+@media (max-width:760px){.rhmini{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.rhmini a{border:1px solid var(--hair);border-radius:14px;padding:12px;text-decoration:none;min-width:0}
+.rhmini a:hover{border-color:var(--brass)}
+.rhmini b{display:block;font-size:14px;font-weight:600;margin-top:6px;line-height:1.35}
+'''
+open(os.path.join(OUT, 'style.css'), 'w', encoding='utf-8').write(CSS + CSS2 + CSSR)
 open(os.path.join(OUT, 'player.js'), 'w', encoding='utf-8').write(PLAYER)
 shutil.copy(os.path.join(HERE, 'audio.js'), os.path.join(OUT, 'audio.js'))
+shutil.copy(os.path.join(HERE, 'rhythm.js'), os.path.join(OUT, 'rhythm.js'))
 AUD = lambda p: f'<script src="{p}audio.js"></script>'
 PW = os.environ.get('JAZZ_PAYWALL') == '1'   # 會員制試做版
 FREE_DEMOS = {'swing', 'blues', 'iivi'}
@@ -734,6 +812,36 @@ if PW:
       f'<div class="wrap" style="max-width:900px">{plans}<section class="sec"><h2>會員可以拿到的 15 件事</h2><div class="bens">{bens}</div></section>'
       f'<p class="note2">會員方案準備中，開放時會先通知電子報讀者和 IG 追蹤者。</p></div>' + letter() + foot())
 
+# ---------- 節奏遊戲 ----------
+from rhythm_data import RHY
+_SHT = {x['ep']: x['title'] for x in json.load(open(os.path.join(HERE, 'shorts.json'), encoding='utf-8'))}
+_rj = [dict(r, n=i + 1, eptitle=_SHT.get(r['ep'], '')) for i, r in enumerate(RHY)]
+PLAYSVG = '<svg viewBox="0 0 14 14" aria-hidden="true"><path d="M3 1.5v11l9-5.5z" fill="currentColor"/></svg>'
+def pbtn(i, label, cls='dplay', extra=''):
+    return f'<button class="{cls}" id="{i}" data-l="{label}" aria-pressed="false"{extra}>{PLAYSVG}<span>{label}</span></button>'
+lvmap = ''.join(f'<a class="lvl" data-id="{r["id"]}" href="#{r["id"]}"><em>{r["n"]}</em><b>{e(r["name"])}</b><span>{e(r["en"])}</span><span class="st"></span></a>' for r in _rj)
+gab = ''.join(f'<div><button class="dplay gplay" data-w="{w}" data-l="聽 {w}" aria-pressed="false">{PLAYSVG}<span>聽 {w}</span></button><button class="gans" data-w="{w}">是 {w}</button></div>' for w in 'AB')
+RPAGE = (HEAD.format(title='節奏遊戲｜爵士101', desc='爵士樂的九種節奏，九關：先聽、再跟著拍、最後用耳朵猜。搖擺、shuffle、巴薩諾瓦、clave、5/4、放克、自由爵士。', p='', ogimg='') + nav('', 'rhythm') +
+  phead('九種節奏，九關。', '爵士不只有搖擺。九關，每關三步：先聽、再跟著拍、最後用耳朵猜。音樂都在你的瀏覽器裡現場演奏，建議戴耳機或開喇叭。') +
+  f'<div class="wrap rgame"><div class="lvmap">{lvmap}</div><p class="tot" id="tot"></p>'
+  '<section class="rstage" id="stage" aria-label="關卡"><div class="rs-head"><small id="lvnum"></small><h2 id="lvname"></h2><span class="en" id="lven"></span><p id="lvone"></p></div>'
+  '<div class="steps"><button data-s="listen">1 聽</button><button data-s="tap">2 跟拍</button><button data-s="guess">3 猜</button></div>'
+  '<div class="rs-body"><div class="rs-wheel"><canvas id="wheel" role="img" aria-label="節奏圈：一圈是一段循環，金色的點是要拍的地方"></canvas><div class="tapzone" id="tapzone" hidden><button class="tapbtn" id="tapbtn">拍</button><div class="tapline"><p id="tapfb" class="tapfb" aria-live="polite"></p><span id="tapcount" class="tapcount"></span></div><p class="kbd">用電腦可以按空白鍵。</p></div></div><div class="rs-side">'
+  f'<div class="pane" data-s="listen"><p id="lslisten"></p><div class="dctl">{pbtn("lplay", "播放")}<button class="btn2" id="tonext">下一步：跟著拍</button></div></div>'
+  f'<div class="pane" data-s="tap" hidden><p id="tapinfo"></p><div class="dctl">{pbtn("tstart", "開始")}</div>'
+  '<div id="tapres" class="res" hidden><b id="tappct"></b><p id="tapverdict"></p><p id="tapmsg" class="meta"></p><button class="btn2" id="tapnext">下一步：猜</button></div></div>'
+  f'<div class="pane" data-s="guess" hidden><p id="gq"></p><div class="gab">{gab}</div><p id="gfb" class="gfb" aria-live="polite"></p><button class="btn2" id="gnext" hidden>下一題</button>'
+  '<div id="gres" class="res" hidden><b id="gresT"></b><div class="dctl"><button class="dplay" id="gresN"></button><button class="btn2" id="gretry">再玩一次</button></div></div></div>'
+  '<div class="rs-more"><p><b>冷知識</b><span id="lvfact"></span></p><p><b>去聽這兩首</b><span id="lvsongs"></span></p><p id="lvep"></p></div>'
+  '</div></div></section>'
+  f'<section class="sec exam"><h2>總複習：九選一</h2><p class="lede">隨機放一段，你猜是哪一種。一共十題，九關還沒玩完也可以先考。</p>{pbtn("xstart", "開始考")}'
+  f'<div id="xbox" hidden><p id="xq"></p>{pbtn("xplay", "再聽一次")}<div id="xopts" class="xopts"></div><p id="xfb" aria-live="polite"></p><button class="btn2" id="xnext" hidden>下一題</button></div><div id="xend" hidden><b id="xendT"></b></div></section>'
+  '<details class="latset"><summary>拍子總是對不上？</summary><p>藍牙耳機會讓聲音晚一點才到。系統已經自動扣掉一部分；如果你一直被判「晚了」，把這裡往右調，一直被判「早了」就往左。</p>'
+  '<label>補償 <input type="range" id="lat" min="-100" max="250" step="10" value="0"> <output id="latv">0 ms</output></label></details></div>'
+  + letter() + f'<script>window.RHY={json.dumps(_rj, ensure_ascii=False)};</script><script src="rhythm.js"></script>' + foot())
+W('', 'rhythm.html', RPAGE)
+RHMINI = ''.join(f'<a href="rhythm.html#{r["id"]}"><em>{r["n"]}</em><b>{e(r["name"])}</b></a>' for r in _rj)
+
 # ---------- 首頁 ----------
 f0 = S[0]
 rows = ''.join(f'<a class="row" href="story/{s["slug"]}.html"><div class="y">{e(s["year"])}</div><div><h3>{e(s["title"])}</h3><p>{e(s["dek"])}</p></div>{img(s["ph"], "", "t", s["title"], S.index(s))}</a>' for s in sorted(S, key=lambda x: x['year']))
@@ -843,6 +951,7 @@ index = HEAD.format(title='爵士101｜一分鐘講不完的爵士故事', desc=
     f'<section class="sec"><h2>第一次聽，照這個順序。</h2><p class="lede">十張唱片，一張比一張多一點東西。每張先聽一首就好。</p><div class="pathmini">{pmini}</div><a class="more-link" href="start.html">看完整的入門路線</a></section></div>' + \
     f'<section class="band"><div class="in" style="display:block"><small>聽懂爵士</small><h2>先按下去，再讀解釋。</h2><p>同一段旋律，直的和搖擺的差在哪裡？十二小節藍調長什麼樣子？用瀏覽器現場彈給你聽。</p>' + \
     f'<div class="demos">{demo_card("swing")}{demo_card("blues")}</div><a class="btn" href="listen.html">聽全部十個示範</a></div></section>' + \
+    f'<div class="wrap"><section class="sec"><h2>爵士有九種走路的方式。</h2><p class="lede">搖擺、shuffle、巴薩諾瓦、5/4……九關節奏遊戲，每關先聽、再跟著拍、最後用耳朵猜。</p><div class="rhmini">{RHMINI}</div><a class="more-link" href="rhythm.html">開始玩節奏遊戲</a></section></div>' + \
     f'<div class="wrap"><section class="sec"><h2>逛一個爵士一百年的展。</h2><p class="lede">六個展廳、二十多件展品，從紐奧良的街頭走到今天。點任何一件，就能看說明、先聽一首。</p><div class="tlmini">{tlm}</div><a class="more-link" href="timeline.html">走進線上展</a></section>' + \
     f'<section class="sec"><h2>先認識這些人。</h2><p class="lede">每個人一句話、一首歌。</p><div class="pmini">{peo}</div><a class="more-link" href="people.html">看全部 {len(PEOPLE)} 位樂手</a></section>' + \
     '<section class="sec"><h2>今天學一個詞。</h2><div class="today" id="today"><div><h3 id="tw"></h3><p id="tx"></p></div><div><button id="tn">換一個</button></div></div><a class="more-link" href="words.html">打開小辭典</a></section>' + \
