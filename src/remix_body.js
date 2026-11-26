@@ -57,13 +57,15 @@ function arrange(song,sty){var hr=split(sty),H=hr[0],R=hr[1],a=[],mk=[],M=song.m
 var cur=null,timer=null;
 function bt(b,sw){var w=Math.floor(b+1e-6),f=b-w;if(sw!==.5&&Math.abs(f-.5)<1e-6)f=sw;return w+f}
 function play(songId,sty,o){stop();if(!ctx)init();ctx.resume();bus=ctx.createGain();bus.gain.value=1;bus.connect(master);o=o||{};
-  var s=SB[songId];cur={song:s,sty:sty,next:sty,arr:{},t0:ctx.currentTime+.15,spb:60/s.bpm,pos:0,bar:0,once:!!o.once,onEnd:o.onEnd,reveal:o.reveal!==false,shown:[]};
+  var s=SB[songId];cur={song:s,sty:sty,next:sty,arr:{},t0:ctx.currentTime+.15,spb:60/s.bpm,pos:0,bar:0,once:!!o.once,onEnd:o.onEnd,auto:!!o.auto,onSong:o.onSong,reveal:o.reveal!==false,shown:[]};
   cur.arr[sty]=arrange(s,sty);tick();timer=setInterval(tick,40);return cur}
 function A(st){if(!cur.arr[st])cur.arr[st]=arrange(cur.song,st);return cur.arr[st]}
-function tick(){if(!cur)return;var now=ctx.currentTime,M=cur.song.meter,pk=cur.song.pick||0;
+function tick(){if(!cur)return;var now=ctx.currentTime,M=cur.song.meter,pk=cur.song.pick||0;if(cur.next!==cur.sty&&cur.pos===0)cur.sty=cur.next;
   while(cur.t0+cur.pos*cur.spb<now+.35){var p=cur.pos,ar=A(cur.sty);
     if(p>=ar.beats){if(cur.once){var c=cur;setTimeout(function(){if(cur===c)stop()},(ar.beats*cur.spb-(now-cur.t0))*1000+700);cur.pos=1e9;break}
-      cur.t0+=ar.beats*cur.spb+cur.spb*(M===3?0:0);cur.pos=0;cur.arr={};ar=A(cur.sty);p=0}
+      cur.t0+=ar.beats*cur.spb;cur.pos=0;cur.arr={};cur.loopN=(cur.loopN||0)+1;
+      if(cur.auto&&cur.loopN>=2&&!cur.prog){var ids=SONGS.map(function(x){return x.id}).filter(function(x){return x!==cur.song.id});var nid=ids[Math.floor(Math.random()*ids.length)];cur.song=SB[nid];cur.spb=60/cur.song.bpm;cur.loopN=0;if(cur.onSong)cur.onSong(nid)}
+      ar=A(cur.sty);p=0;M=cur.song.meter;pk=cur.song.pick||0}
     if(((p-pk)%M+M)%M===0&&cur.next!==cur.sty){cur.sty=cur.next;ar=A(cur.sty)}
     var sw=ar.sw;ar.ev.forEach(function(e){if(e[1]>=p&&e[1]<p+1){INS[e[0]](cur.t0+bt(e[1],sw)*cur.spb,e[2],Math.max(.05,e[3]*cur.spb),e[4]);if(e.mel)cur.shown.push([cur.t0+bt(e[1],sw)*cur.spb,e[2],e[3]*cur.spb,1])}});
     ar.mk.forEach(function(m){if(m[0]>=p&&m[0]<p+1)cur.shown.push([cur.t0+m[0]*cur.spb,m,0,0,cur.sty])});
@@ -99,15 +101,17 @@ function mark(){$$('.stys button').forEach(function(b){var on=b.dataset.id===sty
   $$('.rhys button').forEach(function(b){var on=b.dataset.id===hr[1];b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)});
   if(sty){$('#styname').textContent=YB[sty].name;$('#stydesc').textContent=YB[sty].desc}else{$('#styname').textContent=HB[hr[0]].name+' × '+RB[hr[1]].name;$('#stydesc').textContent=HB[hr[0]].desc+' '+RB[hr[1]].desc}
   if(cur&&!cur.prog)cur.next=curSty()}
-function setSong(id){song=id;$$('.songs button').forEach(function(b){b.classList.toggle('on',b.dataset.id===id);b.setAttribute('aria-pressed',b.dataset.id===id)});$('#sname').textContent=SB[id].name;$('#snote').textContent=SB[id].note;if(cur&&!cur.prog){var s=cur.next;stop();play(id,s,{onEnd:onEnd});setPlay(true)}}
+function setSong(id){song=id;$$('.songs button').forEach(function(b){b.classList.toggle('on',b.dataset.id===id);b.setAttribute('aria-pressed',b.dataset.id===id)});$('#sname').textContent=SB[id].name;$('#snote').textContent=SB[id].note;if(cur&&!cur.prog&&!cur.dj){var s=cur.next;stop();play(id,s,popt());setPlay(true)}}
 function setPlay(on){var b=$('#pp');b.classList.toggle('playing',on);b.querySelector('span').textContent=on?'停止':'播放';b.setAttribute('aria-pressed',on)}
 function onEnd(){setPlay(false)}
-function startIf(){if(!cur||cur.prog){play(song,curSty(),{onEnd:onEnd});setPlay(true)}}
+var AUTO=true;function popt(){return {onEnd:onEnd,auto:AUTO,onSong:function(id){song=id;$$('.songs button').forEach(function(b){b.classList.toggle('on',b.dataset.id===id);b.setAttribute('aria-pressed',b.dataset.id===id)});$('#sname').textContent=SB[id].name;$('#snote').textContent=SB[id].note}}}
+function startIf(){if(!cur||cur.prog){play(song,curSty(),popt());setPlay(true)}}
+var autoEl=document.getElementById('auto');if(autoEl){autoEl.checked=AUTO;autoEl.addEventListener('change',function(){AUTO=autoEl.checked;if(cur&&!cur.prog)cur.auto=AUTO})}
 $$('.songs button').forEach(function(b){b.addEventListener('click',function(){setSong(b.dataset.id)})});
 $$('.stys button').forEach(function(b){b.addEventListener('click',function(){sty=b.dataset.id;mix=split(sty).slice();mark();startIf()})});
 $$('.harms button').forEach(function(b){b.addEventListener('click',function(){mix=split(curSty()).slice();mix[0]=b.dataset.id;sty=null;for(var k in PRE)if(PRE[k][0]===mix[0]&&PRE[k][1]===mix[1])sty=k;mark();startIf()})});
 $$('.rhys button').forEach(function(b){b.addEventListener('click',function(){mix=split(curSty()).slice();mix[1]=b.dataset.id;sty=null;for(var k in PRE)if(PRE[k][0]===mix[0]&&PRE[k][1]===mix[1])sty=k;mark();startIf()})});
-$('#pp').addEventListener('click',function(){if(cur&&!cur.prog){stop();return}play(song,curSty(),{onEnd:onEnd});setPlay(true)});
+$('#pp').addEventListener('click',function(){if(cur&&!cur.prog){stop();return}play(song,curSty(),popt());setPlay(true)});
 /* 常見和弦進行：沒有旋律，只放和弦，節奏可換 */
 var PROGS=window.PROGS||[],PB={};PROGS.forEach(function(p){PB[p.id]=p;SB['__'+p.id]={id:'__'+p.id,name:p.name,meter:4,bpm:p.bpm||96,pick:0,chStart:0,mel:[],ch:p.ch}});
 var prog=PROGS.length?PROGS[0].id:null,prhy='straight';
@@ -131,3 +135,20 @@ $$('#xopts button').forEach(function(b){b.addEventListener('click',function(){if
    $('#xendT').textContent='十題答對 '+X.ok+' 題。'+(X.ok>=9?'你的耳朵已經分得出伴奏的顏色了，可以去玩和聲遊戲的基礎關。':X.ok>=6?'大部分都對了。錯的那幾種，回上面同一首歌切換著多聽幾次。':'回上面挑一首熟的歌，五種伴奏輪流切，聽它們差在哪。')}})});
 $('#xnext').addEventListener('click',xRound);
 setSong(song);mark();
+
+/* ---- 不停歌挑戰：音樂一直放，每隔一段偷換和弦或節奏，猜換成什麼 ---- */
+(function(){var box=document.getElementById('djbox');if(!box)return;var G=null,tm=null;
+function mixOf(){return split(cur.next)}
+function setB(b,on){b.classList.toggle('playing',on);b.querySelector('span').textContent=on?'結束挑戰':'開始挑戰'}
+function round(){if(!G||!cur||!cur.dj)return;G.i++;var hr=mixOf().slice(),kind=Math.random()<.5?'h':'r',L=kind==='h'?HARM:RHY,cur0=kind==='h'?hr[0]:hr[1];
+  var pool=L.map(function(x){return x.id}).filter(function(x){return x!==cur0}),nx=pool[Math.floor(Math.random()*pool.length)];if(kind==='h')hr[0]=nx;else hr[1]=nx;
+  cur.next=hr.join('|');cur.reveal=false;G.ans=nx;G.kind=kind;G.done=false;
+  $('#djq').textContent='第 '+G.i+' / 10 題：下一小節會偷換'+(kind==='h'?'「和弦」':'「節奏」')+'，換成什麼？';
+  var o=$('#djopts');o.innerHTML='';L.forEach(function(x){var b=document.createElement('button');b.textContent=x.name;b.dataset.id=x.id;b.addEventListener('click',function(){ans(x.id,b)});o.appendChild(b)});$('#djfb').textContent=''}
+function ans(id,b){if(G.done)return;G.done=true;var ok=id===G.ans;if(ok)G.ok++;$$('#djopts button').forEach(function(x){x.disabled=true;if(x.dataset.id===G.ans)x.classList.add('right')});if(!ok)b.classList.add('wrong');
+  var L=G.kind==='h'?HB:RB;$('#djfb').textContent=(ok?'答對。':'是「'+L[G.ans].name+'」。')+L[G.ans].desc+'　目前 '+G.ok+' / '+G.i;if(cur)cur.reveal=true;
+  if(G.i>=10){end();return}tm=setTimeout(round,4500)}
+function end(){clearTimeout(tm);if(cur&&cur.dj)stop();var n=G?G.ok:0;$('#djq').textContent='十題答對 '+n+' 題。'+(n>=9?'DJ 等級，換什麼你都聽得出來。':n>=6?'很不錯，錯的那幾種去上面自己混著聽。':'先在上面自己混，多切幾次再回來挑戰。');$('#djopts').innerHTML='';G=null;setB($('#djstart'),false)}
+$('#djstart').addEventListener('click',function(){if(G){end();return}G={i:0,ok:0};var sid=SONGS[Math.floor(Math.random()*SONGS.length)].id;stop();
+  var c=play(sid,'triad|straight',{auto:true,onSong:function(id){$('#djsong').textContent='正在放：'+SB[id].name},onEnd:function(){if(G)end()}});c.dj=1;setPlay(false);$('#djsong').textContent='正在放：'+SB[sid].name;setB($('#djstart'),true);
+  tm=setTimeout(round,3000)})})();
