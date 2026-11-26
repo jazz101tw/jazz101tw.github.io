@@ -560,7 +560,8 @@ CSSR = r'''
 .rhmini a{border:1px solid var(--hair);border-radius:14px;padding:12px;text-decoration:none;min-width:0}
 .rhmini a:hover{border-color:var(--brass)}
 .remixcta{display:block;text-decoration:none;background:var(--midnight);color:#f2efe9;border-radius:22px;padding:22px 26px;margin-top:6px}.remixcta b{display:block;font-size:19px;color:#ecbd62}.remixcta span{display:block;color:#b9bdc7;font-size:15px;margin-top:4px}.remixcta:hover b{text-decoration:underline}
-.pills{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0}.pills button{background:var(--paper);border:1px solid var(--hair);color:var(--ink);font:inherit;font-size:16px;padding:10px 18px;border-radius:999px;cursor:pointer}.pills button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}.pills.ondark button{background:none;border-color:#3a4660;color:#f2efe9}.pills.ondark button.on{background:#e0ae55;border-color:#e0ae55;color:#1d1408}.klegend{font-size:13px;color:#a3a8b4!important;margin-top:10px}.klegend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin:0 4px 0 10px}.klegend .g{background:#e0ae55}.klegend .b{background:#7fb3d5}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0}.pills button{background:var(--paper);border:1px solid var(--hair);color:var(--ink);font:inherit;font-size:16px;padding:10px 18px;border-radius:999px;cursor:pointer}.pills button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}.pills.ondark button{background:none;border-color:#3a4660;color:#f2efe9}.pills.ondark button.on{background:#e0ae55;border-color:#e0ae55;color:#1d1408}.mixbox{margin-top:18px;color:#c9ccd4}.mixbox summary{cursor:pointer;font-size:15px;color:#ecbd62}.mixl{font-size:13px;color:#a3a8b4!important;margin:14px 0 8px}.pills.sm button{font-size:14px;padding:7px 14px}
+.klegend{font-size:13px;color:#a3a8b4!important;margin-top:10px}.klegend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin:0 4px 0 10px}.klegend .g{background:#e0ae55}.klegend .b{background:#7fb3d5}
 .tier{font-size:20px;font-weight:700;margin:30px 0 10px;letter-spacing:-.01em}.tier span{display:block;font-size:14px;font-weight:400;color:var(--graphite);margin-top:2px}.lvmap.t4{grid-template-columns:repeat(4,minmax(0,1fr))}.lvmap.t3{grid-template-columns:repeat(3,minmax(0,1fr))}.lvmap.t6{grid-template-columns:repeat(6,minmax(0,1fr))}@media (max-width:900px){.lvmap.t4{grid-template-columns:repeat(2,minmax(0,1fr))}.lvmap.t6{grid-template-columns:repeat(3,minmax(0,1fr))}}.hstory{max-width:40em;margin:70px 0 0}.hstory h2{font-size:clamp(26px,4vw,36px);font-weight:700;letter-spacing:-.02em;line-height:1.25}.hstory p{margin-top:14px;color:var(--ink)}
 .hdemos{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-top:16px}.hdemos .dplay{text-align:left}.hq{font-size:19px;font-weight:600;color:#f2efe9!important}.hopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:16px}
 .rhmini b{display:block;font-size:14px;font-weight:600;margin-top:6px;line-height:1.35}
@@ -851,20 +852,25 @@ W('', 'rhythm.html', RPAGE)
 RHMINI = ''.join(f'<a href="rhythm.html#{r["id"]}"><em>{r["n"]}</em><b>{e(r["name"])}</b></a>' for r in _rj)
 
 # ---------- 換伴奏 ----------
-from remix_data import SONGS, STY
+from remix_data import SONGS, STY, HARM, RHYS, PROGS
 _songs = ''.join(f'<button data-id="{x["id"]}" aria-pressed="false">{e(x["name"])}</button>' for x in SONGS)
 _stys = ''.join(f'<button data-id="{x["id"]}" aria-pressed="false">{e(x["name"])}</button>' for x in STY)
-XPAGE = (HEAD.format(title='換伴奏｜爵士101', desc='同一首歌，五種伴奏：原味、小調、爵士、巴薩諾瓦、藍調。播放中隨時切換，聽和弦怎麼改變一首歌的顏色。', p='', ogimg='') + nav('', 'harmony') +
-  phead('同一首歌，五種伴奏。', '挑一首你會唱的歌，按下播放，然後隨時切換伴奏。旋律沒變，換的是和弦和節奏，聽它的心情怎麼跟著變。') +
+_pill = lambda L: ''.join(f'<button data-id="{x["id"]}" aria-pressed="false">{e(x["name"])}</button>' for x in L)
+XPAGE = (HEAD.format(title='換伴奏｜爵士101', desc='同一首歌，換和弦、換節奏：爵士、巴薩諾瓦、藍調、雷鬼、搖滾、進行曲。還有流行歌最常用的七組和弦進行。', p='', ogimg='') + nav('', 'harmony') +
+  phead('同一首歌，換一種伴奏。', '挑一首你會唱的歌，按下播放，然後隨時切換伴奏。旋律沒變，換的是和弦和節奏，聽它的心情怎麼跟著變。') +
   f'<div class="wrap rgame"><h3 class="tier">先挑一首歌<span>八首都是公有領域的老歌。</span></h3><div class="songs pills">{_songs}</div>'
   '<section class="rstage" id="stage" aria-label="播放器"><div class="rs-head"><small id="snote"></small><h2 id="sname"></h2></div>'
   '<div class="rs-body"><div class="rs-wheel"><canvas id="wheel" role="img" aria-label="鍵盤：金色是現在的和弦，藍色是旋律"></canvas><p class="klegend"><i class="g"></i>和弦 <i class="b"></i>旋律</p></div><div class="rs-side">'
   f'<div class="dctl">{pbtn("pp", "播放")}</div><p class="tier" style="color:#f2efe9;margin-top:22px">換伴奏<span style="color:#a3a8b4">播放中直接按，下一小節就換。</span></p><div class="stys pills ondark">{_stys}</div>'
+  f'<details class="mixbox"><summary>自己混：和弦 × 節奏</summary><p class="mixl">換和弦</p><div class="harms pills ondark sm">{_pill(HARM)}</div><p class="mixl">換節奏</p><div class="rhys pills ondark sm">{_pill(RHYS)}</div></details>'
   '<div class="rs-more"><p><b id="styname"></b><span id="stydesc"></span></p></div></div></div></section>'
+  f'<section class="sec"><h2>流行歌最常用的和弦進行</h2><p class="lede">流行歌的旋律有版權，但和弦進行沒有。這裡只放和弦，你會發現很多首歌用的是同一組。</p><div class="progs pills" style="margin-top:24px">{_pill(PROGS)}</div>'
+  f'<section class="rstage" aria-label="和弦進行播放器"><div class="rs-head"><small id="pnums"></small><h2 id="pname"></h2></div><div class="rs-body"><div class="rs-wheel"><canvas id="wheel2" role="img" aria-label="鍵盤：金色是現在的和弦"></canvas></div><div class="rs-side">'
+  f'<div class="dctl">{pbtn("ppp", "播放")}</div><p class="mixl" style="margin-top:20px">換節奏</p><div class="prhys pills ondark sm">{_pill(RHYS)}</div><div class="rs-more"><p><span id="pdesc"></span></p><p><span id="psongs"></span></p></div></div></div></section></section>'
   f'<section class="sec exam"><h2>考考耳朵：這是哪一種伴奏？</h2><p class="lede">隨機挑一首歌、一種伴奏，你猜是哪一種。一共十題。</p>{pbtn("xstart", "開始考")}'
   f'<div id="xbox" hidden><p id="xq"></p>{pbtn("xplay", "再聽一次")}<div id="xopts" class="xopts"></div><p id="xfb" aria-live="polite"></p><button class="btn2" id="xnext" hidden>下一題</button></div><div id="xend" hidden><b id="xendT"></b></div></section>'
   '<p class="tot" style="margin-top:40px">聽出差別之後，去玩<a href="harmony.html" style="color:var(--brass)">和聲遊戲</a>，看這些和弦叫什麼名字。</p></div>'
-  + letter() + f'<script>window.SONGS={json.dumps(SONGS, ensure_ascii=False)};window.STY={json.dumps(STY, ensure_ascii=False)};</script><script src="remix.js"></script>' + foot())
+  + letter() + f'<script>window.SONGS={json.dumps(SONGS, ensure_ascii=False)};window.STY={json.dumps(STY, ensure_ascii=False)};window.HARM={json.dumps(HARM, ensure_ascii=False)};window.RHYS={json.dumps(RHYS, ensure_ascii=False)};window.PROGS={json.dumps(PROGS, ensure_ascii=False)};</script><script src="remix.js"></script>' + foot())
 W('', 'remix.html', XPAGE)
 
 # ---------- 和聲遊戲 ----------
