@@ -559,6 +559,8 @@ CSSR = r'''
 @media (max-width:760px){.rhmini{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .rhmini a{border:1px solid var(--hair);border-radius:14px;padding:12px;text-decoration:none;min-width:0}
 .rhmini a:hover{border-color:var(--brass)}
+.remixcta{display:block;text-decoration:none;background:var(--midnight);color:#f2efe9;border-radius:22px;padding:22px 26px;margin-top:6px}.remixcta b{display:block;font-size:19px;color:#ecbd62}.remixcta span{display:block;color:#b9bdc7;font-size:15px;margin-top:4px}.remixcta:hover b{text-decoration:underline}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0}.pills button{background:var(--paper);border:1px solid var(--hair);color:var(--ink);font:inherit;font-size:16px;padding:10px 18px;border-radius:999px;cursor:pointer}.pills button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}.pills.ondark button{background:none;border-color:#3a4660;color:#f2efe9}.pills.ondark button.on{background:#e0ae55;border-color:#e0ae55;color:#1d1408}.klegend{font-size:13px;color:#a3a8b4!important;margin-top:10px}.klegend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin:0 4px 0 10px}.klegend .g{background:#e0ae55}.klegend .b{background:#7fb3d5}
 .tier{font-size:20px;font-weight:700;margin:30px 0 10px;letter-spacing:-.01em}.tier span{display:block;font-size:14px;font-weight:400;color:var(--graphite);margin-top:2px}.lvmap.t4{grid-template-columns:repeat(4,minmax(0,1fr))}.lvmap.t3{grid-template-columns:repeat(3,minmax(0,1fr))}.lvmap.t6{grid-template-columns:repeat(6,minmax(0,1fr))}@media (max-width:900px){.lvmap.t4{grid-template-columns:repeat(2,minmax(0,1fr))}.lvmap.t6{grid-template-columns:repeat(3,minmax(0,1fr))}}.hstory{max-width:40em;margin:70px 0 0}.hstory h2{font-size:clamp(26px,4vw,36px);font-weight:700;letter-spacing:-.02em;line-height:1.25}.hstory p{margin-top:14px;color:var(--ink)}
 .hdemos{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-top:16px}.hdemos .dplay{text-align:left}.hq{font-size:19px;font-weight:600;color:#f2efe9!important}.hopts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:16px}
 .rhmini b{display:block;font-size:14px;font-weight:600;margin-top:6px;line-height:1.35}
@@ -569,6 +571,7 @@ shutil.copy(os.path.join(HERE, 'audio.js'), os.path.join(OUT, 'audio.js'))
 shutil.copy(os.path.join(HERE, 'rhythm.js'), os.path.join(OUT, 'rhythm.js'))
 _rj_src = open(os.path.join(HERE, 'rhythm.js'), encoding='utf-8').read()
 _core = _rj_src[_rj_src.index('var AC='):_rj_src.index('/* ---- 九種節奏 ---- */')]
+open(os.path.join(OUT, 'remix.js'), 'w', encoding='utf-8').write('/* 爵士101 換伴奏（由 build.py 產生：聲音引擎取自 rhythm.js） */\n(function(){\n' + _core + open(os.path.join(HERE, 'remix_body.js'), encoding='utf-8').read() + '\n})();\n')
 open(os.path.join(OUT, 'harmony.js'), 'w', encoding='utf-8').write('/* 爵士101 和聲遊戲（由 build.py 產生：聲音引擎取自 rhythm.js） */\n(function(){\n' + _core + open(os.path.join(HERE, 'harmony_body.js'), encoding='utf-8').read() + '\n})();\n')
 AUD = lambda p: f'<script src="{p}audio.js"></script>'
 PW = os.environ.get('JAZZ_PAYWALL') == '1'   # 會員制試做版
@@ -847,6 +850,23 @@ RPAGE = (HEAD.format(title='節奏遊戲｜爵士101', desc='爵士樂的九種�
 W('', 'rhythm.html', RPAGE)
 RHMINI = ''.join(f'<a href="rhythm.html#{r["id"]}"><em>{r["n"]}</em><b>{e(r["name"])}</b></a>' for r in _rj)
 
+# ---------- 換伴奏 ----------
+from remix_data import SONGS, STY
+_songs = ''.join(f'<button data-id="{x["id"]}" aria-pressed="false">{e(x["name"])}</button>' for x in SONGS)
+_stys = ''.join(f'<button data-id="{x["id"]}" aria-pressed="false">{e(x["name"])}</button>' for x in STY)
+XPAGE = (HEAD.format(title='換伴奏｜爵士101', desc='同一首歌，五種伴奏：原味、小調、爵士、巴薩諾瓦、藍調。播放中隨時切換，聽和弦怎麼改變一首歌的顏色。', p='', ogimg='') + nav('', 'harmony') +
+  phead('同一首歌，五種伴奏。', '挑一首你會唱的歌，按下播放，然後隨時切換伴奏。旋律沒變，換的是和弦和節奏，聽它的心情怎麼跟著變。') +
+  f'<div class="wrap rgame"><h3 class="tier">先挑一首歌<span>八首都是公有領域的老歌。</span></h3><div class="songs pills">{_songs}</div>'
+  '<section class="rstage" id="stage" aria-label="播放器"><div class="rs-head"><small id="snote"></small><h2 id="sname"></h2></div>'
+  '<div class="rs-body"><div class="rs-wheel"><canvas id="wheel" role="img" aria-label="鍵盤：金色是現在的和弦，藍色是旋律"></canvas><p class="klegend"><i class="g"></i>和弦 <i class="b"></i>旋律</p></div><div class="rs-side">'
+  f'<div class="dctl">{pbtn("pp", "播放")}</div><p class="tier" style="color:#f2efe9;margin-top:22px">換伴奏<span style="color:#a3a8b4">播放中直接按，下一小節就換。</span></p><div class="stys pills ondark">{_stys}</div>'
+  '<div class="rs-more"><p><b id="styname"></b><span id="stydesc"></span></p></div></div></div></section>'
+  f'<section class="sec exam"><h2>考考耳朵：這是哪一種伴奏？</h2><p class="lede">隨機挑一首歌、一種伴奏，你猜是哪一種。一共十題。</p>{pbtn("xstart", "開始考")}'
+  f'<div id="xbox" hidden><p id="xq"></p>{pbtn("xplay", "再聽一次")}<div id="xopts" class="xopts"></div><p id="xfb" aria-live="polite"></p><button class="btn2" id="xnext" hidden>下一題</button></div><div id="xend" hidden><b id="xendT"></b></div></section>'
+  '<p class="tot" style="margin-top:40px">聽出差別之後，去玩<a href="harmony.html" style="color:var(--brass)">和聲遊戲</a>，看這些和弦叫什麼名字。</p></div>'
+  + letter() + f'<script>window.SONGS={json.dumps(SONGS, ensure_ascii=False)};window.STY={json.dumps(STY, ensure_ascii=False)};</script><script src="remix.js"></script>' + foot())
+W('', 'remix.html', XPAGE)
+
 # ---------- 和聲遊戲 ----------
 from harmony_data import HAR
 _hj = [dict(r, n=i + 1, eptitle=_SHT.get(r['ep'], '')) for i, r in enumerate(HAR)]
@@ -859,7 +879,7 @@ HSTORY = ('<section class="hstory"><h2>爵士樂發明了所有的和弦嗎？</
   '<p>Bill Evans 這類受過古典訓練的鋼琴手，常說自己從德布西、拉威爾學到和聲的顏色，再帶進俱樂部，所以爵士聽起來常常像古典印象派，只是多了搖擺。</p></section>')
 HPAGE = (HEAD.format(title='和聲遊戲｜爵士101', desc='沒學過樂理也能玩：十二個音、調性、和弦、五度圈，一路聽到二五一、藍調、轉調和 Giant Steps。', p='', ogimg='') + nav('', 'harmony') +
   phead('用耳朵學和弦。', '從十二個音、調性、和弦、五度圈開始，一路聽到 Giant Steps。不用看譜，每關先聽、再考，畫面會亮給你看聲音走到哪裡。建議戴耳機。') +
-  f'<div class="wrap rgame">{hmap}<p class="tot" id="tot"></p>'
+  f'<div class="wrap rgame"><a class="remixcta" href="remix.html"><b>完全沒學過？先玩這個：同一首歌，換五種伴奏</b><span>小星星、歡樂頌、Jingle Bells……按一下就從兒歌變爵士、變巴薩諾瓦、變藍調。</span></a>{hmap}<p class="tot" id="tot"></p>'
   '<section class="rstage" id="stage" aria-label="關卡"><div class="rs-head"><small id="lvnum"></small><h2 id="lvname"></h2><span class="en" id="lven"></span><p id="lvone"></p></div>'
   '<div class="steps"><button data-s="listen">1 聽</button><button data-s="quiz">2 考</button></div>'
   '<div class="rs-body"><div class="rs-wheel"><canvas id="wheel" role="img" aria-label="五度圈：亮起的是現在的和弦根音，線是剛剛走過的路"></canvas></div><div class="rs-side">'
@@ -981,7 +1001,7 @@ index = HEAD.format(title='爵士101｜一分鐘講不完的爵士故事', desc=
     f'<section class="sec"><h2>第一次聽，照這個順序。</h2><p class="lede">十張唱片，一張比一張多一點東西。每張先聽一首就好。</p><div class="pathmini">{pmini}</div><a class="more-link" href="start.html">看完整的入門路線</a></section></div>' + \
     f'<section class="band"><div class="in" style="display:block"><small>聽懂爵士</small><h2>先按下去，再讀解釋。</h2><p>同一段旋律，直的和搖擺的差在哪裡？十二小節藍調長什麼樣子？用瀏覽器現場彈給你聽。</p>' + \
     f'<div class="demos">{demo_card("swing")}{demo_card("blues")}</div><a class="btn" href="listen.html">聽全部十個示範</a></div></section>' + \
-    f'<div class="wrap"><section class="sec"><h2>爵士有九種走路的方式。</h2><p class="lede">搖擺、shuffle、巴薩諾瓦、5/4……九關節奏遊戲，每關先聽、再跟著拍、最後用耳朵猜。</p><div class="rhmini">{RHMINI}</div><a class="more-link" href="rhythm.html">開始玩節奏遊戲</a></section><section class="sec"><h2>和弦也可以用耳朵學。</h2><p class="lede">沒學過樂理也能玩：從十二個音、調性和五度圈開始，一路聽到 Giant Steps。</p><div class="rhmini">{HMINI}</div><a class="more-link" href="harmony.html">開始玩和聲遊戲</a></section></div>' + \
+    f'<div class="wrap"><section class="sec"><h2>爵士有九種走路的方式。</h2><p class="lede">搖擺、shuffle、巴薩諾瓦、5/4……九關節奏遊戲，每關先聽、再跟著拍、最後用耳朵猜。</p><div class="rhmini">{RHMINI}</div><a class="more-link" href="rhythm.html">開始玩節奏遊戲</a></section><section class="sec"><h2>和弦也可以用耳朵學。</h2><p class="lede">沒學過樂理也能玩：從十二個音、調性和五度圈開始，一路聽到 Giant Steps。</p><div class="rhmini">{HMINI}</div><a class="more-link" href="remix.html">先玩換伴奏：同一首歌五種風格</a>　<a class="more-link" href="harmony.html">和聲遊戲</a></section></div>' + \
     f'<div class="wrap"><section class="sec"><h2>逛一個爵士一百年的展。</h2><p class="lede">六個展廳、二十多件展品，從紐奧良的街頭走到今天。點任何一件，就能看說明、先聽一首。</p><div class="tlmini">{tlm}</div><a class="more-link" href="timeline.html">走進線上展</a></section>' + \
     f'<section class="sec"><h2>先認識這些人。</h2><p class="lede">每個人一句話、一首歌。</p><div class="pmini">{peo}</div><a class="more-link" href="people.html">看全部 {len(PEOPLE)} 位樂手</a></section>' + \
     '<section class="sec"><h2>今天學一個詞。</h2><div class="today" id="today"><div><h3 id="tw"></h3><p id="tx"></p></div><div><button id="tn">換一個</button></div></div><a class="more-link" href="words.html">打開小辭典</a></section>' + \
