@@ -446,7 +446,7 @@ HEAD = """<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><me
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{p}style.css"></head><body>"""
 
-NAV = [('index.html#stories', '故事', 'stories'), ('shorts.html', '一分鐘故事', 'shorts'), ('start.html', '入門路線', 'start'), ('listen.html', '聽懂爵士', 'listen'), ('rhythm.html', '節奏遊戲', 'rhythm'), ('harmony.html', '和聲遊戲', 'harmony'), ('people.html', '樂手', 'people'),
+NAV = [('index.html#stories', '故事', 'stories'), ('shorts.html', '一分鐘故事', 'shorts'), ('start.html', '入門路線', 'start'), ('listen.html', '聽懂爵士', 'listen'), ('people.html', '樂手', 'people'),
        ('words.html', '小辭典', 'words'), ('timeline.html', '線上展', 'timeline'), ('shop.html', '選品', 'shop'), ('index.html#letter', '電子報', 'letter')]
 def nav(p, cur=''):
     links = ''.join(f'<a href="{p}{h}"{" class=cur aria-current=page" if k == cur else ""}>{t}</a>' for h, t, k in NAV)
@@ -830,7 +830,7 @@ def pbtn(i, label, cls='dplay', extra=''):
     return f'<button class="{cls}" id="{i}" data-l="{label}" aria-pressed="false"{extra}>{PLAYSVG}<span>{label}</span></button>'
 lvmap = ''.join(f'<a class="lvl" data-id="{r["id"]}" href="#{r["id"]}"><em>{r["n"]}</em><b>{e(r["name"])}</b><span>{e(r["en"])}</span><span class="st"></span></a>' for r in _rj)
 gab = ''.join(f'<div><button class="dplay gplay" data-w="{w}" data-l="聽 {w}" aria-pressed="false">{PLAYSVG}<span>聽 {w}</span></button><button class="gans" data-w="{w}">是 {w}</button></div>' for w in 'AB')
-RPAGE = (HEAD.format(title='節奏遊戲｜爵士101', desc='爵士樂的九種節奏，九關：先聽、再跟著拍、最後用耳朵猜。搖擺、shuffle、巴薩諾瓦、clave、5/4、放克、自由爵士。', p='', ogimg='') + nav('', 'rhythm') +
+RPAGE = (HEAD.format(title='節奏遊戲｜爵士101', desc='爵士樂的九種節奏，九關：先聽、再跟著拍、最後用耳朵猜。搖擺、shuffle、巴薩諾瓦、clave、5/4、放克、自由爵士。', p='', ogimg='').replace('</title>', '</title><meta name="robots" content="noindex,nofollow">', 1) + nav('', 'rhythm') +
   phead('九種節奏，九關。', '爵士不只有搖擺。九關，每關三步：先聽、再跟著拍、最後用耳朵猜。音樂都在你的瀏覽器裡現場演奏，建議戴耳機或開喇叭。') +
   f'<div class="wrap rgame"><div class="lvmap">{lvmap}</div><p class="tot" id="tot"></p>'
   '<section class="rstage" id="stage" aria-label="關卡"><div class="rs-head"><small id="lvnum"></small><h2 id="lvname"></h2><span class="en" id="lven"></span><p id="lvone"></p></div>'
@@ -856,7 +856,7 @@ from remix_data import SONGS, STY, HARM, RHYS, PROGS
 _songs = ''.join(f'<button data-id="{x["id"]}" aria-pressed="false">{e(x["name"])}</button>' for x in SONGS)
 _stys = ''.join(f'<button data-id="{x["id"]}" aria-pressed="false">{e(x["name"])}</button>' for x in STY)
 _pill = lambda L: ''.join(f'<button data-id="{x["id"]}" aria-pressed="false">{e(x["name"])}</button>' for x in L)
-XPAGE = (HEAD.format(title='換伴奏｜爵士101', desc='同一首歌，換和弦、換節奏：爵士、巴薩諾瓦、藍調、雷鬼、搖滾、進行曲。還有流行歌最常用的七組和弦進行。', p='', ogimg='') + nav('', 'harmony') +
+XPAGE = (HEAD.format(title='換伴奏｜爵士101', desc='同一首歌，換和弦、換節奏：爵士、巴薩諾瓦、藍調、雷鬼、搖滾、進行曲。還有流行歌最常用的七組和弦進行。', p='', ogimg='').replace('</title>', '</title><meta name="robots" content="noindex,nofollow">', 1) + nav('', 'harmony') +
   phead('同一首歌，換一種伴奏。', '挑一首你會唱的歌，按下播放，然後隨時切換伴奏。旋律沒變，換的是和弦和節奏，聽它的心情怎麼跟著變。') +
   f'<div class="wrap rgame"><h3 class="tier">先挑一首歌<span>八首都是公有領域的老歌。</span></h3><div class="songs pills">{_songs}</div>'
   '<section class="rstage" id="stage" aria-label="播放器"><div class="rs-head"><small id="snote"></small><h2 id="sname"></h2></div>'
@@ -884,7 +884,7 @@ HSTORY = ('<section class="hstory"><h2>爵士樂發明了所有的和弦嗎？</
   '<p>常聽到這句話，但不是真的。屬七和弦在巴哈的年代就到處都是；九和弦這類更濃的和弦，德布西、拉威爾在 1900 年前後也已經大量寫進曲子裡。</p>'
   '<p>爵士做的事情是另一件：把這些「濃」的和弦變成每天都在用的家常菜，並且和流行樂手一起，把和弦整理成一套樂手之間的速記，例如 Cmaj7、G7、Dm7。拿到一張只寫旋律和這些代號的譜，樂手就能當場彈出一整首歌。</p>'
   '<p>Bill Evans 這類受過古典訓練的鋼琴手，常說自己從德布西、拉威爾學到和聲的顏色，再帶進俱樂部，所以爵士聽起來常常像古典印象派，只是多了搖擺。</p></section>')
-HPAGE = (HEAD.format(title='和聲遊戲｜爵士101', desc='沒學過樂理也能玩：十二個音、調性、和弦、五度圈，一路聽到二五一、藍調、轉調和 Giant Steps。', p='', ogimg='') + nav('', 'harmony') +
+HPAGE = (HEAD.format(title='和聲遊戲｜爵士101', desc='沒學過樂理也能玩：十二個音、調性、和弦、五度圈，一路聽到二五一、藍調、轉調和 Giant Steps。', p='', ogimg='').replace('</title>', '</title><meta name="robots" content="noindex,nofollow">', 1) + nav('', 'harmony') +
   phead('用耳朵學和弦。', '從十二個音、調性、和弦、五度圈開始，一路聽到 Giant Steps。不用看譜，每關先聽、再考，畫面會亮給你看聲音走到哪裡。建議戴耳機。') +
   f'<div class="wrap rgame"><a class="remixcta" href="remix.html"><b>完全沒學過？先玩這個：同一首歌，換五種伴奏</b><span>小星星、歡樂頌、Jingle Bells……按一下就從兒歌變爵士、變巴薩諾瓦、變藍調。</span></a>{hmap}<p class="tot" id="tot"></p>'
   '<section class="rstage" id="stage" aria-label="關卡"><div class="rs-head"><small id="lvnum"></small><h2 id="lvname"></h2><span class="en" id="lven"></span><p id="lvone"></p></div>'
@@ -1008,8 +1008,7 @@ index = HEAD.format(title='爵士101｜一分鐘講不完的爵士故事', desc=
     f'<section class="sec"><h2>第一次聽，照這個順序。</h2><p class="lede">十張唱片，一張比一張多一點東西。每張先聽一首就好。</p><div class="pathmini">{pmini}</div><a class="more-link" href="start.html">看完整的入門路線</a></section></div>' + \
     f'<section class="band"><div class="in" style="display:block"><small>聽懂爵士</small><h2>先按下去，再讀解釋。</h2><p>同一段旋律，直的和搖擺的差在哪裡？十二小節藍調長什麼樣子？用瀏覽器現場彈給你聽。</p>' + \
     f'<div class="demos">{demo_card("swing")}{demo_card("blues")}</div><a class="btn" href="listen.html">聽全部十個示範</a></div></section>' + \
-    f'<div class="wrap"><section class="sec"><h2>爵士有九種走路的方式。</h2><p class="lede">搖擺、shuffle、巴薩諾瓦、5/4……九關節奏遊戲，每關先聽、再跟著拍、最後用耳朵猜。</p><div class="rhmini">{RHMINI}</div><a class="more-link" href="rhythm.html">開始玩節奏遊戲</a></section><section class="sec"><h2>和弦也可以用耳朵學。</h2><p class="lede">沒學過樂理也能玩：從十二個音、調性和五度圈開始，一路聽到 Giant Steps。</p><div class="rhmini">{HMINI}</div><a class="more-link" href="remix.html">先玩換伴奏：同一首歌五種風格</a>　<a class="more-link" href="harmony.html">和聲遊戲</a></section></div>' + \
-    f'<div class="wrap"><section class="sec"><h2>逛一個爵士一百年的展。</h2><p class="lede">六個展廳、二十多件展品，從紐奧良的街頭走到今天。點任何一件，就能看說明、先聽一首。</p><div class="tlmini">{tlm}</div><a class="more-link" href="timeline.html">走進線上展</a></section>' + \
+        f'<div class="wrap"><section class="sec"><h2>逛一個爵士一百年的展。</h2><p class="lede">六個展廳、二十多件展品，從紐奧良的街頭走到今天。點任何一件，就能看說明、先聽一首。</p><div class="tlmini">{tlm}</div><a class="more-link" href="timeline.html">走進線上展</a></section>' + \
     f'<section class="sec"><h2>先認識這些人。</h2><p class="lede">每個人一句話、一首歌。</p><div class="pmini">{peo}</div><a class="more-link" href="people.html">看全部 {len(PEOPLE)} 位樂手</a></section>' + \
     '<section class="sec"><h2>今天學一個詞。</h2><div class="today" id="today"><div><h3 id="tw"></h3><p id="tx"></p></div><div><button id="tn">換一個</button></div></div><a class="more-link" href="words.html">打開小辭典</a></section>' + \
     f'<section class="sec"><h2>開始聽，需要的東西不多。</h2><p class="lede">幾張唱片、一本書、一副能聽見貝斯的耳機。</p><div class="items">{shopmini}</div><a class="more-link" href="shop.html">看全部選品</a></section>' + \
